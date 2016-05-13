@@ -53,3 +53,6 @@
 /web/uploads/
 /web/css/
 /web/js/
+
+# File PhpStorm #
+/idea/
