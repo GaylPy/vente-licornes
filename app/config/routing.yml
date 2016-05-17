@@ -7,3 +7,8 @@ client:
     type: rest
     resource: APIRestLicorneBundle\Controller\ClientController
     prefix: /api
+
+adresse:
+    type: rest
+    resource: APIRestLicorneBundle\Controller\AdresseController
+    prefix: /api

@@ -2,8 +2,8 @@
 
 namespace APIRestLicorneBundle\Controller;
 
-use APIRestLicorneBundle\Entity\Client;
-use APIRestLicorneBundle\Form\ClientType;
+use APIRestLicorneBundle\Entity\Adresse;
+use APIRestLicorneBundle\Form\AdresseType;
 use FOS\RestBundle\Util\Codes;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -13,76 +13,67 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
-class ClientController extends Controller
+class AdresseController extends Controller
 {
+
     /**
-     * Renvoi la liste complète des clients
+     * Renvoi la liste complète des adresses
      *
      * @return array
      * @View()
      */
-    public function getClientsAction()
-    {
-        $em = $this->getDoctrine()->getManager();
+   public function getAdressesAction(){
+       $em = $this->getDoctrine()->getManager();
 
-        $clients = $em->getRepository('APIRestLicorneBundle:Client')->findAll();
+       $adresses = $em->getRepository('APIRestLicorneBundle:Adresse')->findAll();
 
-        return array('clients' => $clients);
-    }
+       return array('adresses' => $adresses);
+   }
 
     /**
-     * Renvoi un client
+     * Renvoi une adresse
      *
-     * @param Client $client
+     * @param Adresse $adresse
      * @return array
      * @View()
-     * @ParamConverter("client", class="APIRestLicorneBundle:Client")
+     * @ParamConverter("client", class="APIRestLicorneBundle:Adresse")
      */
-    public function getClientAction(Client $client)
+    public function getAdresseAction(Adresse $adresse)
     {
-        return array('client' => $client);
+        return array('adresse' => $adresse);
     }
 
     /**
-     * Create a Post entity.
+     * Créer une adresse
      *
      * @View(statusCode=201)
-     *
      * @param Request $request
-     *
      * @return Response
      *
-     * @Route("/clients", name="post_client")
-     *
-    */
-    public function postClientAction(Request $request)
+     */
+    public function postAdresseAction(Request $request)
     {
-        $entity = new Client();
-        $form = $this->createForm(ClientType::class, $entity, array("method" => $request->getMethod()));
-
+        $entity = new Adresse();
+        $form = $this->createForm(AdresseType::class, $entity, array("method" => $request->getMethod()));
         $form->handleRequest($request);
-
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
-
             return $entity;
         }
-
         return View::create(array('errors' => $form->getErrors()), Codes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
-     * @Route("/client/create")
+     * @Route("/adresse/create")
      *
      */
     public function createFormClientAction(){
-        $entity = new Client();
-        $form = $this->createForm(ClientType::class, $entity);
-
+        $entity = new Adresse();
+        $form = $this->createForm(AdresseType::class, $entity);
         return $this->render('APIRestLicorneBundle:Default:index.html.twig', array(
-           'form' => $form->createView()
+            'form' => $form->createView()
         ));
     }
 }
