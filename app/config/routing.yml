@@ -1,8 +1,9 @@
 api_rest_licorne:
     resource: "@APIRestLicorneBundle/Controller/"
     type:     annotation
-    prefix:   /
+    prefix:   /api
 
 client:
     type: rest
     resource: APIRestLicorneBundle\Controller\ClientController
+    prefix: /api
