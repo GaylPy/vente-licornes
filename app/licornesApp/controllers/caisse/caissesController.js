@@ -15,7 +15,11 @@
         vm.reverse = false;
         vm.searchText = null;
         vm.cardAnimationClass = '.card-animation';
-
+        vm.cart = [];
+        vm.ht = 0;
+        vm.tva = 20;
+        vm.ttc = 0;
+        vm.cart.confirmed = false;
         //paging
         vm.totalRecords = 0;
         vm.pageSize = 10;
@@ -30,7 +34,38 @@
             Card: 0,
             List: 1
         };
-
+        vm.updateHtPrice = function(){
+            vm.ht = 0;
+            vm.cart.forEach(function(elem) {
+                console.log(elem.quantity)
+                vm.ht += elem.order.price*elem.quantity;
+            }, this);
+            return ;
+        }
+        vm.addToCart = function(licorne){
+        if(!containsObject(licorne,vm.cart)){
+            vm.cart.push(licorne); 
+        }
+            console.log(vm.cart);
+                
+        }
+        vm.removeFromCart = function(licorne){
+            var index = vm.cart.indexOf(licorne);
+            if(index > -1){
+                vm.cart.splice(index,1);
+            }
+        }
+        
+        function containsObject(obj, list) {
+        var i;
+        for (i = 0; i < list.length; i++) {
+            if (list[i] === obj) {
+                return true;
+            }
+        }
+             return false;
+        }
+        
         vm.changeDisplayMode = function (displayMode) {
             switch (displayMode) {
                 case vm.DisplayModeEnum.Card:
@@ -41,7 +76,30 @@
                     break;
             }
         };
+        
+        vm.confirmSell = function(){
+            // TODO Verification des stocks
+            var idEcurie = 1;
+            _.forEach(vm.cart, function(value) {
+            console.log("quantity :" + value.quantity);
+            console.log("ecurie :" + idEcurie);
+            console.log("licorneId :" + value.id);
+            });            
+            console.log("num fid :" + vm.cart.numfid);
+                
+           // dataService.insertOrder(vm.order).then(processSuccess,processError);   
+           processSuccess();
+                
+        };
+        
+        function processSuccess() {
+            vm.cart.confirmed = true;    
+        }
 
+        function processError(error) {
+
+        }
+                
         vm.navigate = function (url) {
             $location.path(url);
         };
@@ -62,6 +120,16 @@
             getLicornesSummary();
         }
 
+        vm.exportInvoice = function(){
+        var header = '<meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';  
+        var table = document.getElementById('exportable').innerHTML;
+        table.replace();
+        var blob = new Blob([header + table], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+            });
+            saveAs(blob, "Report.xls");
+        };            
+        
         //function createWatches() {
         //    //Watch searchText value and pass it and the licornes to nameCityStateFilter
         //    //Doing this instead of adding the filter to ng-repeat allows it to only be run once (rather than twice)

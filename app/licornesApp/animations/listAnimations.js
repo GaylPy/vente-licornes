@@ -16,6 +16,6 @@
         };
     };
 
-    angular.module('licornessApp').animation('.card-animation', wcAnimations);
+    angular.module('licornesApp').animation('.card-animation', wcAnimations);
 
 }());

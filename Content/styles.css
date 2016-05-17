@@ -51,6 +51,9 @@ html {
     overflow-y: scroll;
     overflow-x: hidden;
 }
+/*.invoice-generation{
+    display:none;
+}*/
 
 body {
     font-family: 'Roboto'
@@ -88,7 +91,15 @@ body {
     margin-bottom: 20px;
     position: relative;
 }
-
+#ecurie{
+    color: white;
+    font-weight: bold;
+    -webkit-text-shadow: none;
+    text-shadow: none;
+    height: 30px;
+    padding-top: 6px;
+    padding-bottom: 0px;
+}
 .cardHeader {
     background-color:rgba(187, 111, 181, 0.78);
     font-size:14pt;
@@ -96,7 +107,9 @@ body {
     padding:5px;
     width:100%;
 }
-
+.cursor{
+    cursor: pointer;
+}
 .cardClose {
     color: white;
     font-weight:bold;
@@ -146,7 +159,7 @@ body {
 }
 
 .ordersTable tr:first-child th, .licornesTable tr:first-child th {
-    background-color: #027FF4;
+    background-color: rgba(187, 111, 181, 0.78);
     color: #fff;
     font-weight: bold;
 }

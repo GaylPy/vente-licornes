@@ -4,7 +4,7 @@
         ['ngRoute', 'ngAnimate', 'wc.directives', 'ui.bootstrap']);
 
     app.config(['$routeProvider', function ($routeProvider) {
-        var viewBase = '/gdl/app/licornesApp/views/';
+        var viewBase = '/vente-licornes/app/licornesApp/views/';
 
         $routeProvider
             .when('/licornes', {

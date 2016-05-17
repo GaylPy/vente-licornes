@@ -45,7 +45,13 @@
                 return status.data;
             });
         };
-
+        factory.insertOrder = function(order){
+            return $http.put(serviceBase + 'postOrder',order).then(function (results) {
+                order.id = results.data.id;
+                return results.data;
+            });
+        };
+        
         factory.deleteLicorne = function (id) {
             return $http.delete(serviceBase + 'deleteLicorne/' + id).then(function (status) {
                 return status.data;
@@ -90,7 +96,7 @@
             licos.push(licorne3);
             licos.push(licorne4);            
             
-            for(var i = 5; i < 50; i++)
+            for(var i = 5; i < 8; i++)
                 licos.push({ id : i, firstName :"A", lastName:"B", city:"paris", gender:"male", order:order,state:state});
                 
             var resource = baseResource;
