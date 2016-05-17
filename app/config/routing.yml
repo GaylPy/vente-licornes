@@ -7,3 +7,18 @@ client:
     type: rest
     resource: APIRestLicorneBundle\Controller\ClientController
     prefix: /api
+
+produit:
+    type: rest
+    resource: APIRestLicorneBundle\Controller\ProduitController
+    prefix: /api
+
+typestock:
+    type: rest
+    resource: APIRestLicorneBundle\Controller\TypeStockController
+    prefix: /api
+
+categorie:
+    type: rest
+    resource: APIRestLicorneBundle\Controller\CategorieController
+    prefix: /api

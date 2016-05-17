@@ -18,10 +18,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 
 /**
- * @RouteResource("Typestock")
+ * @RouteResource("Categorie")
  * */
 
-class TypeStockController extends FOSRestController
+class CategorieController extends FOSRestController
 {
     /**
      * @return array
@@ -32,29 +32,29 @@ class TypeStockController extends FOSRestController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $typestocks = $em->getRepository('APIRestLicorneBundle:TypeStock')->findAll();
+        $categories = $em->getRepository('APIRestLicorneBundle:Categorie')->findAll();
 
-        $view = $this->view(array('typestocks' => $typestocks), 200);
+        $view = $this->view(array('categories' => $categories), 200);
 
         return $this->handleView($view);
 
     }
 
     /**
-     * @param TypeStock $typestock
+     * @param Categorie $categorie
      * @return array
      * @View()
-     * @ParamConverter("TypeStock", class="APIRestLicorneBundle:TypeStock")
+     * @ParamConverter("Categorie", class="APIRestLicorneBundle:Categorie")
      */
-    public function getTypeStockAction(TypeStock $typestock)
+    public function getAction(Categorie $categorie)
     {
-        return array('typestock' => $typestock);
+        return array('categorie' => $categorie);
     }
 
     /**
      *
      */
-    public function postTypeStockAction(TypeStock $typestock)
+    public function postAction(Categorie $categorie)
     {
 
     }
@@ -62,7 +62,7 @@ class TypeStockController extends FOSRestController
     /**
      *
      */
-    public function editTypeStockAction(TypeStock $typestock)
+    public function editAction(Categorie $categorie)
     {
 
     }

@@ -3,6 +3,7 @@
 namespace APIRestLicorneBundle\Controller;
 
 use APIRestLicorneBundle\Entity\Produit;
+use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Util\Codes;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -12,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
-class ProduitController extends Controller
+class ProduitController extends FOSRestController
 {
     /**
      * @return array
@@ -24,14 +25,16 @@ class ProduitController extends Controller
 
         $produits = $em->getRepository('APIRestLicorneBundle:Produit')->findAll();
 
-        return array('produits' => $produits);
+        $view = $this->view(array('produits' => $produits), 200);
+
+        return $this->handleView($view);
     }
 
     /**
      * @param Produit $produit
      * @return array
      * @View()
-     * @ParamConverter("Client", class="APIRestLicorneBundle:Produit")
+     * @ParamConverter("Produit", class="APIRestLicorneBundle:Produit")
      */
     public function getProduitAction(Produit $produit)
     {
@@ -54,6 +57,10 @@ class ProduitController extends Controller
 
     }
 
-    
+    public function deleteProduitAction(Produit $produit)
+    {
+ 
+    }
+
 
 }
