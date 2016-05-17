@@ -46,7 +46,7 @@ class TypeStockController extends FOSRestController
      * @View()
      * @ParamConverter("TypeStock", class="APIRestLicorneBundle:TypeStock")
      */
-    public function getTypeStockAction(TypeStock $typestock)
+    public function getAction(TypeStock $typestock)
     {
         return array('typestock' => $typestock);
     }
@@ -54,7 +54,7 @@ class TypeStockController extends FOSRestController
     /**
      *
      */
-    public function postTypeStockAction(TypeStock $typestock)
+    public function postAction(TypeStock $typestock)
     {
 
     }
@@ -62,7 +62,7 @@ class TypeStockController extends FOSRestController
     /**
      *
      */
-    public function editTypeStockAction(TypeStock $typestock)
+    public function editAction(TypeStock $typestock)
     {
 
     }

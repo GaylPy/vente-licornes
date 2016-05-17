@@ -22,3 +22,8 @@ categorie:
     type: rest
     resource: APIRestLicorneBundle\Controller\CategorieController
     prefix: /api
+
+file:
+    type: rest
+    resource: APIRestLicorneBundle\Controller\FileController
+    prefix: /api

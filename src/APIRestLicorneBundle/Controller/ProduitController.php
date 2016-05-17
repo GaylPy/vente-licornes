@@ -4,6 +4,7 @@ namespace APIRestLicorneBundle\Controller;
 
 use APIRestLicorneBundle\Entity\Produit;
 use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Util\Codes;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -13,13 +14,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
+/**
+ * @RouteResource("Produit")
+ * */
+
 class ProduitController extends FOSRestController
 {
     /**
      * @return array
      * @View()
      */
-    public function getProduitsAction()
+    public function cgetAction()
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -36,7 +41,7 @@ class ProduitController extends FOSRestController
      * @View()
      * @ParamConverter("Produit", class="APIRestLicorneBundle:Produit")
      */
-    public function getProduitAction(Produit $produit)
+    public function getAction(Produit $produit)
     {
         return array('produit' => $produit);
     }
@@ -44,7 +49,7 @@ class ProduitController extends FOSRestController
     /**
      *
      */
-    public function postProduitAction(Produit $produit)
+    public function postAction(Produit $produit)
     {
 
     }
@@ -52,12 +57,12 @@ class ProduitController extends FOSRestController
     /**
      *
      */
-    public function editProduitAction(Produit $produit)
+    public function editAction(Produit $produit)
     {
 
     }
 
-    public function deleteProduitAction(Produit $produit)
+    public function deleteAction(Produit $produit)
     {
  
     }
