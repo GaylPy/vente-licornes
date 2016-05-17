@@ -121,7 +121,7 @@ class ClientController extends Controller
     }
 
     /**
-     * @Route("/")
+     * @Route("/client/create")
      *
      */
     public function createFormClientAction(){
