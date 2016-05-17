@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+
 class ClientController extends Controller
 {
     /**
@@ -47,12 +49,8 @@ class ClientController extends Controller
      * Create a Post entity.
      *
      * @View(statusCode=201)
-     *
      * @param Request $request
-     *
      * @return Response
-     *
-     * @Route("/clients", name="post_client")
      *
     */
     public function postClientAction(Request $request)
@@ -71,6 +69,39 @@ class ClientController extends Controller
         }
 
         return View::create(array('errors' => $form->getErrors()), Codes::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * Delete a client
+     * @param Client $client
+     * @return array
+     * @View()
+     * @ParamConverter("client", class="APIRestLicorneBundle:Client")
+     * @Method({"DELETE"})
+     */
+    public function deleteClientAction(Client $client)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $em->remove($client);
+        $em->flush();
+
+        $clients = $em->getRepository('APIRestLicorneBundle:Client')->findAll();
+
+        return array('clients' => $clients);
+    }
+
+    /**
+     * Delete a client
+     * @param Client $client
+     * @return array
+     * @View()
+     * @ParamConverter("client", class="APIRestLicorneBundle:Client")
+     * @Method({"PUT"})
+     */
+    public function putClientAction(Request $request, Client $client)
+    {
+
     }
 
     /**

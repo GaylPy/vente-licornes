@@ -38,13 +38,6 @@ class Employe
     /**
      * @var string
      *
-     * @ORM\Column(name="login", type="string", length=45)
-     */
-    private $login;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="email", type="string", length=45)
      */
     private $email;
@@ -113,30 +106,6 @@ class Employe
     public function getPrenom()
     {
         return $this->prenom;
-    }
-
-    /**
-     * Set login
-     *
-     * @param string $login
-     *
-     * @return Employe
-     */
-    public function setLogin($login)
-    {
-        $this->login = $login;
-
-        return $this;
-    }
-
-    /**
-     * Get login
-     *
-     * @return string
-     */
-    public function getLogin()
-    {
-        return $this->login;
     }
 
     /**
