@@ -2,8 +2,8 @@
 
 namespace APIRestLicorneBundle\Form;
 
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,7 +18,11 @@ class ClientType extends AbstractType
         $builder
             ->add('prenom')
             ->add('nom')
-            ->add('dateNaissance', DateTimeType::class)
+            ->add('dateNaissance',  DateTimeType::class)
+            ->add('email')
+            ->add('password')
+            ->add('adresse')
+            ->add('fidelite')
         ;
     }
     
@@ -28,7 +32,7 @@ class ClientType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'APIRestLicorneBundle\Entity\Client',
+            'data_class' => 'APIRestLicorneBundle\Entity\Client'
         ));
     }
 }

@@ -41,28 +41,28 @@ class Client
     /**
      * @var string
      *
-     * @ORM\Column(name="nom", type="string", length=255)
+     * @ORM\Column(name="nom", type="string", length=255, nullable=true)
      */
     private $nom;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="dateNaissance", type="datetime")
+     * @ORM\Column(name="dateNaissance", type="datetime", nullable=true)
      */
     private $dateNaissance;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=45)
+     * @ORM\Column(name="email", type="string", length=45, nullable=true)
      */
     private $email;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="text")
+     * @ORM\Column(name="password", type="text", nullable=true)
      */
     private $password;
 

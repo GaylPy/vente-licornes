@@ -46,7 +46,7 @@ class ClientController extends Controller
     }
 
     /**
-     * Create a Post entity.
+     * Créer un client
      *
      * @View(statusCode=201)
      * @param Request $request
@@ -72,7 +72,36 @@ class ClientController extends Controller
     }
 
     /**
-     * Delete a client
+     * Modifier un client
+     *
+     * @param Client $client
+     * @return array
+     * @View()
+     * @ParamConverter("client", class="APIRestLicorneBundle:Client")
+     * @Method({"PUT"})
+     */
+    public function putClientAction(Request $request, Client $client)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $this->createForm(ClientType::class, $client);
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $em->persist($client);
+            $em->flush();
+
+            return View::create(null, Codes::HTTP_NO_CONTENT);
+        }
+
+        return array(
+            'form' => $form,
+        );
+    }
+
+    /**
+     * Supprimer un client
+     *
      * @param Client $client
      * @return array
      * @View()
@@ -89,19 +118,6 @@ class ClientController extends Controller
         $clients = $em->getRepository('APIRestLicorneBundle:Client')->findAll();
 
         return array('clients' => $clients);
-    }
-
-    /**
-     * Delete a client
-     * @param Client $client
-     * @return array
-     * @View()
-     * @ParamConverter("client", class="APIRestLicorneBundle:Client")
-     * @Method({"PUT"})
-     */
-    public function putClientAction(Request $request, Client $client)
-    {
-
     }
 
     /**
