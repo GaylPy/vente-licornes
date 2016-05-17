@@ -158,28 +158,4 @@ class Client
     {
         return $this->adresse;
     }
-
-    /**
-     * Set fidelite
-     *
-     * @param \APIRestLicorneBundle\Entity\Fidelite $fidelite
-     *
-     * @return Client
-     */
-    public function setFidelite(\APIRestLicorneBundle\Entity\Fidelite $fidelite = null)
-    {
-        $this->fidelite = $fidelite;
-
-        return $this;
-    }
-
-    /**
-     * Get fidelite
-     *
-     * @return \APIRestLicorneBundle\Entity\Fidelite
-     */
-    public function getFidelite()
-    {
-        return $this->fidelite;
-    }
 }
