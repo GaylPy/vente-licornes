@@ -1,0 +1,21 @@
+﻿<div class="orders view">
+    <div class="container">
+        <header>
+            <h3><span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;Licorne Orders</h3>
+        </header>
+        <div class="container">
+            <div class="row">
+                <div class="span12">
+                    <div>
+                        <h4>Orders for <a href="#/licorneedit/{{vm.licorne.id}}">{{ vm.licorne.firstName + ' ' + vm.licorne.lastName }} <i class="icon-edit editIcon"></i></a></h4>
+                        {{vm.licorne.address}}
+                        <br />
+                        {{vm.licorne.city}}, {{vm.licorne.state.name}}
+                        <br /><br />
+                    </div>
+                    <div data-ng-include="'/app/licornesApp/views/orders/ordersTable.html'" data-ng-controller="OrderChildController as vm" />
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>

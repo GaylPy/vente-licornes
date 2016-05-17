@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html ng-app="licornesApp">
+<head>
+    <title>Licorne Manager</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="Content/bootstrap.css" rel="stylesheet" />
+    <link href="Content/animations.css" rel="stylesheet" />
+    <link href="Content/styles.css" rel="stylesheet" />
+    
+</head>
+<body ng-cloak>
+
+    <header class="navbar navbar-inner navbar-fixed-top" ng-controller="NavbarController as vm">
+        <nav class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" ng-click="vm.isCollapsed = !vm.isCollapsed">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#/">
+                    <img style="widht:48px;height:48px;" src="Content/images/licornes.png" alt="logo">
+                    <span class="appTitle">{{ vm.appTitle }}</span>
+                </a>
+            </div>
+            <div class="nav-container" data-collapse="vm.isCollapsed">
+
+                <!-- With menu-highlighter directive -->
+                <!--<ul class="nav navbar-nav nav-pills navBarPadding"
+                    menu-highlighter highlight-class-name="active">
+                    <li><a href="#/licornes">Licornes</a></li>
+                    <li><a href="#/orders">Orders</a></li>
+                    <li><a href="#/about">About</a></li>
+                    <li id="nav-login" ng-click="vm.loginOrOut()">
+                        href not used but needed to compare against path in menu-highlighter 
+                        <a data-href="#/login">{{ vm.loginLogoutText }}</a>
+                    </li>
+                </ul>-->
+
+                <!-- Without menu-highlighter directive -->
+                <ul class="nav navbar-nav nav-pills navBarPadding">
+                    <li ng-class="{'active': vm.highlight('/licornes')}"><a href="#/licornes">Licornes</a></li>
+                    <li ng-class="{'active': vm.highlight('/orders')}"><a href="#/orders">Orders</a></li>
+                    <li ng-class="{'active': vm.highlight('/about')}"><a href="#/about">About</a></li>
+                    <li ng-class="{'active': vm.highlight('/login')}" id="nav-login"
+                        ng-click="vm.loginOrOut()">
+                        <a>{{ vm.loginLogoutText }}</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="slide-animation-container">
+        <div ng-view id="ng-view" class="slide-animation"></div>
+    </div>
+
+    <div id="footer">
+        <div class="navbar navbar-fixed-bottom">
+            <div class="navbar-inner footer">
+                <div class="container">
+                    <footer>
+                        <div class="row">
+                            <div class="col-md-12">
+                                  EPSI I4 - LILLE 
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div wc-overlay wc-overlay-delay="300">
+        <br /><img src="Content/images/spinner.gif" />&nbsp;&nbsp;Loading
+    </div>
+
+    <!-- 3rd party libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-route.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-animate.min.js"></script>
+    <script src="Scripts/angular-ui-bootstrap.js"></script>
+    <script src="Scripts/tweenMax.min.js"></script>
+    
+
+    <!-- Custom scripts -->
+    <script src="app/wc.directives/directives/wcOverlay.js"></script>
+    <script src="app/wc.directives/directives/menuHighlighter.js"></script>
+    <script src="app/licornesApp/app.js"></script>
+    <script src="app/licornesApp/animations/listAnimations.js"></script>
+    <script src="app/licornesApp/directives/wcUnique.js"></script>
+    <script src="app/licornesApp/filters/nameCityStateFilter.js"></script>
+    <script src="app/licornesApp/filters/nameProductFilter.js"></script>
+    <script src="app/licornesApp/services/config.js"></script>
+    <script src="app/licornesApp/services/authService.js"></script>
+    <script src="app/licornesApp/services/httpInterceptors.js"></script>
+    <script src="app/licornesApp/services/licornesService.js"></script>
+    <script src="app/licornesApp/services/dataService.js"></script>
+    <script src="app/licornesApp/services/modalService.js"></script>
+    <script src="app/licornesApp/controllers/licornes/licorneEditController.js"></script>
+    <script src="app/licornesApp/controllers/licornes/licorneOrdersController.js"></script>
+    <script src="app/licornesApp/controllers/licornes/licornesController.js"></script>
+    <script src="app/licornesApp/controllers/orders/orderChildController.js"></script>
+    <script src="app/licornesApp/controllers/orders/ordersController.js"></script>
+    <script src="app/licornesApp/controllers/aboutController.js"></script>
+    <script src="app/licornesApp/controllers/navbarController.js"></script>
+    <script src="app/licornesApp/controllers/loginController.js"></script>
+
+</body>
+</html>
+
+
