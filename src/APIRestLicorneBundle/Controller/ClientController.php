@@ -4,6 +4,7 @@ namespace APIRestLicorneBundle\Controller;
 
 use APIRestLicorneBundle\Entity\Client;
 use APIRestLicorneBundle\Form\ClientType;
+use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Util\Codes;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -12,10 +13,10 @@ use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-
+use FOS\RestBundle\Controller\Annotations\RouteResource;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
-class ClientController extends Controller
+class ClientController extends FOSRestController
 {
     /**
      * Renvoi la liste complète des clients
@@ -29,7 +30,9 @@ class ClientController extends Controller
 
         $clients = $em->getRepository('APIRestLicorneBundle:Client')->findAll();
 
-        return array('clients' => $clients);
+        $view = $this->view(array('clients' => $clients), 200);
+
+        return $this->handleView($view);
     }
 
     /**
@@ -65,10 +68,12 @@ class ClientController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $entity;
+            $view = $this->view(array('client' => $entity), 200);
+
+            return $this->handleView($view);
         }
 
-        return View::create(array('errors' => $form->getErrors()), Codes::HTTP_INTERNAL_SERVER_ERROR);
+        return $this->handleView($this->view(array('errors' => $form->getErrors()), Codes::HTTP_INTERNAL_SERVER_ERROR));
     }
 
     /**
@@ -91,7 +96,7 @@ class ClientController extends Controller
             $em->persist($client);
             $em->flush();
 
-            return View::create(null, Codes::HTTP_NO_CONTENT);
+            return $this->renderView(null, Codes::HTTP_NO_CONTENT);
         }
 
         return array(

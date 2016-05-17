@@ -33,6 +33,10 @@ class Adresse
      */
     private $ville;
 
+    public function __toString()
+    {
+        return $this->getVille();
+    }
 
     /**
      * Get id

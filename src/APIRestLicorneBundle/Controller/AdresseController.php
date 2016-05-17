@@ -4,6 +4,7 @@ namespace APIRestLicorneBundle\Controller;
 
 use APIRestLicorneBundle\Entity\Adresse;
 use APIRestLicorneBundle\Form\AdresseType;
+use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Util\Codes;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -13,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
-class AdresseController extends Controller
+class AdresseController extends FOSRestController
 {
 
     /**
@@ -27,7 +28,9 @@ class AdresseController extends Controller
 
        $adresses = $em->getRepository('APIRestLicorneBundle:Adresse')->findAll();
 
-       return array('adresses' => $adresses);
+       $view = $this->view(array('adresses' => $adresses), 200);
+
+       return $this->handleView($view);
    }
 
     /**
@@ -60,19 +63,22 @@ class AdresseController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
-            return $entity;
+
+            $view = $this->view(array('adresse' => $entity), 200);
+
+            return $this->handleView($view);
         }
-        return View::create(array('errors' => $form->getErrors()), Codes::HTTP_INTERNAL_SERVER_ERROR);
+        return $this->view(array('errors' => $form->getErrors()), Codes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * @Route("/adresse/create")
      *
      */
-    public function createFormClientAction(){
+    public function createFormAdresseAction(){
         $entity = new Adresse();
         $form = $this->createForm(AdresseType::class, $entity);
-        return $this->render('APIRestLicorneBundle:Default:index.html.twig', array(
+        return $this->render('APIRestLicorneBundle:Default:adresse.html.twig', array(
             'form' => $form->createView()
         ));
     }
