@@ -58,6 +58,8 @@ class ClientController extends FOSRestController
     */
     public function postClientAction(Request $request)
     {
+        var_dump($request->request);
+        die();
         $entity = new Client();
         $form = $this->createForm(ClientType::class, $entity, array("method" => $request->getMethod()));
 
@@ -68,9 +70,7 @@ class ClientController extends FOSRestController
             $em->persist($entity);
             $em->flush();
 
-            $view = $this->view(array('client' => $entity), 200);
-
-            return $this->handleView($view);
+            return $this->handleView($this->view(array('client' => $entity), 200));
         }
 
         return $this->handleView($this->view(array('errors' => $form->getErrors()), Codes::HTTP_INTERNAL_SERVER_ERROR));
@@ -96,7 +96,7 @@ class ClientController extends FOSRestController
             $em->persist($client);
             $em->flush();
 
-            return $this->renderView(null, Codes::HTTP_NO_CONTENT);
+            return $this->handleView($this->view(null, Codes::HTTP_NO_CONTENT));
         }
 
         return array(

@@ -28,9 +28,7 @@ class AdresseController extends FOSRestController
 
        $adresses = $em->getRepository('APIRestLicorneBundle:Adresse')->findAll();
 
-       $view = $this->view(array('adresses' => $adresses), 200);
-
-       return $this->handleView($view);
+       return $this->handleView($this->view(array('adresses' => $adresses), 200));
    }
 
     /**
