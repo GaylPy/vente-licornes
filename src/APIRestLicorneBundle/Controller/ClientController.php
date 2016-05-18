@@ -51,29 +51,112 @@ class ClientController extends FOSRestController
     /**
      * Créer un client
      *
-     * @View(statusCode=201)
+     * @View(statusCode=200)
      * @param Request $request
      * @return Response
      *
     */
     public function postClientAction(Request $request)
     {
-        var_dump($request->request);
-        die();
-        $entity = new Client();
-        $form = $this->createForm(ClientType::class, $entity, array("method" => $request->getMethod()));
+        $response = new Response();
+        $response->setStatusCode(200);
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Access-Control-Allow-Origin', 'http://unicorn');
 
-        $form->handleRequest($request);
+        $content = 'Vide';
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
+        if($request->getMethod() == 'POST') {
+            $obj = json_decode($request->getContent());
 
-            return $this->handleView($this->view(array('client' => $entity), 200));
+            $entity = new Client();
+
+            if(empty($obj)){
+                $error = array('message' => 'Erreur interne.');
+                $content = json_encode($error);
+            }
+            else{
+                if(isset($obj->{'firstname'}) && isset($obj->{'name'}) && isset($obj->{'email'}) && isset($obj->{'password'})){
+
+                    $entity->setPrenom($obj->{'firstname'});
+                    $entity->setNom($obj->{'name'});
+                    $entity->setEmail($obj->{'email'});
+                    $entity->setPassword($obj->{'password'});
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($entity);
+                    $em->flush();
+
+                    $success = array('message' => 'ok');
+                    $content = json_encode($success);
+
+                }
+                else{
+                    $error = array('message' => 'Veuillez renseigner tous les champs.');
+                    $content = json_encode($error);
+                }
+            }
+        }
+        else{
+            $error = array('message' => 'Erreur interne');
+            $content = json_encode($error);
         }
 
-        return $this->handleView($this->view(array('errors' => $form->getErrors()), Codes::HTTP_INTERNAL_SERVER_ERROR));
+
+        // prints the HTTP headers followed by the content
+        $response->setContent($content);
+        $response->send();
+
+    }
+
+    /**
+     * Connexion un client
+     *
+     * @View(statusCode=200)
+     * @param Request $request
+     * @return Response
+     * @Method({"POST"})
+     */
+    public function postConnexionClientAction(Request $request)
+    {
+
+        $response = new Response();
+        $response->setStatusCode(200);
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Access-Control-Allow-Origin', 'http://unicorn');
+
+        $content = 'Vide';
+
+        if($request->getMethod() == 'POST') {
+            $obj = json_decode($request->getContent());
+            if(empty($obj)){
+                $error = array('message' => 'Erreur interne.');
+                $content = json_encode($error);
+            }
+            else {
+                $em = $this->getDoctrine()->getManager();
+                $client = $em->getRepository('APIRestLicorneBundle:Client')->findOneBy(array(
+                    'email' => $obj->{'email'},
+                    'password' => $obj->{'password'}
+                ));
+
+                if(isset($client)){
+                    $success = array('message' => 'ok');
+                    $content = json_encode($success);
+                }
+                else{
+                    $error = array('message' => 'ko');
+                    $content = json_encode($error);
+                }
+            }
+        }
+        else{
+            $error = array('message' => 'Erreur interne');
+            $content = json_encode($error);
+        }
+
+
+        // prints the HTTP headers followed by the content
+        $response->setContent($content);
+        $response->send();
     }
 
     /**
