@@ -123,11 +123,11 @@
         vm.exportInvoice = function(){
         var header = '<meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';  
         var table = document.getElementById('exportable').innerHTML;
-        table.replace();
+       
         var blob = new Blob([header + table], {
                 type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
             });
-            saveAs(blob, "Report.xls");
+            saveAs(blob, "Facture.xls");
         };            
         
         //function createWatches() {

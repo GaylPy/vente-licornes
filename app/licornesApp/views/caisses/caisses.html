@@ -104,7 +104,7 @@
                             <th data-ng-click="vm.setOrder('product')">Produit</th>
                             <th data-ng-click="vm.setOrder('quantity')">Quantité</th>
                             <th data-ng-click="vm.setOrder('price')">Prix/u</th>
-                            <th data-ng-click="vm.setOrder('total')">Total</th>
+                            <th data-ng-click="vm.setOrder('total')">Total</th> 
                             <th>&nbsp;</th>
                         </tr>
                     </thead>
@@ -161,10 +161,15 @@
                     </tbody>
                 </table>     
              </div>
-             <button class="btn btn-success" data-ng-click="vm.confirmSell()">Confirmer l'achat</button>          
-             <span >
-                 <button ng-class="{'invoice-generation': !cart.confirmed }" class="btn btn-primary " data-ng-click="vm.exportInvoice()">Générer la facture</button>   
+             <span ng-class="{'invoice-generation': vm.cart.confirmed }" >             
+                <button class="btn btn-success" data-ng-click="vm.confirmSell()">Confirmer l'achat</button>          
+             </span>
+             <span ng-class="{'invoice-generation': !vm.cart.confirmed }" >
+                 <button  class="btn btn-primary " data-ng-click="vm.exportInvoice()">Générer la facture</button>   
              </span>       
+             <span ng-class="{'invoice-generation': !vm.cart.confirmed }" >
+                 <button  class="btn btn-success" data-ng-click="vm.exportInvoice()">Terminer</button>   
+             </span>                    
         </div>
         
         

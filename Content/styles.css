@@ -51,9 +51,9 @@ html {
     overflow-y: scroll;
     overflow-x: hidden;
 }
-/*.invoice-generation{
+.invoice-generation{
     display:none;
-}*/
+}
 
 body {
     font-family: 'Roboto'
