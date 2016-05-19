@@ -1,0 +1,48 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="tab-content">
+            <form id="connexion" role="tabpanel" action="http://ykozlowski.noip.me/api/connexions/clients" method="post" class="form-signin tab-pane fade in active">
+                <h2 class="form-signin-heading">Connexion</h2>
+                <label for="inputEmail" class="sr-only">Email</label>
+                <input name="email" type="email" id="inputEmail" class="form-control first" placeholder="Email" required autofocus>
+                <label for="inputPassword" class="sr-only">Mot de passe</label>
+                <input name="password" type="password" id="inputPassword" class="form-control last" placeholder="Mot de passe" required>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="remember-me"> Se souvenir de moi
+                    </label>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Connexion</button>
+                <h5 class="text-center"><a href="#inscription" aria-controls="inscription" role="tab"
+                                           data-toggle="tab">Inscription</a></h5>
+            </form>
+
+            <form id="inscription" role="tabpanel" action="http://ykozlowski.noip.me/api/clients" method="post" class="form-signin tab-pane fade">
+                <h2 class="form-signin-heading">Inscription</h2>
+                <label for="inputFirstName" class="sr-only">Prénom</label>
+                <input name="firstname" type="text" id="inputFirstName" class="form-control first" placeholder="Prénom" required
+                       autofocus>
+                <label for="inputName" class="sr-only">Nom</label>
+                <input name="name" type="text" id="inputName" class="form-control" placeholder="Nom" required>
+                <label for="inputEmail" class="sr-only">Email address</label>
+                <input name="email" type="email" id="inputEmail" class="form-control" placeholder="Email" required >
+                <label for="inputPassword" class="sr-only">Password</label>
+                <input name="password" type="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required>
+                <label for="inputPwd2Check" class="sr-only">Confirmation du mot de passe</label>
+                <input type="password" id="inputPwd2Check" class="form-control last"
+                       placeholder="Confirmation du mot de passe" required>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Inscription</button>
+                <h5 class="text-center"><a href="#connexion" aria-controls="connexion" role="tab" data-toggle="tab">Connexion</a>
+                </h5>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{{ app.request.basepath }}js/connection.js"></script>
+{% endblock %}
