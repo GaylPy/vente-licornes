@@ -37,11 +37,11 @@ class AdresseController extends FOSRestController
      * @param Adresse $adresse
      * @return array
      * @View()
-     * @ParamConverter("client", class="APIRestLicorneBundle:Adresse")
+     * @ParamConverter("adresse", class="APIRestLicorneBundle:Adresse")
      */
     public function getAdresseAction(Adresse $adresse)
     {
-        return array('adresse' => $adresse);
+        return  $this->handleView($this->view(array('adresse' => $adresse), 200));
     }
 
     /**

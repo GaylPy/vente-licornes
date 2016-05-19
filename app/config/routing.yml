@@ -12,3 +12,23 @@ adresse:
     type: rest
     resource: APIRestLicorneBundle\Controller\AdresseController
     prefix: /api
+
+produit:
+    type: rest
+    resource: APIRestLicorneBundle\Controller\ProduitController
+    prefix: /api
+
+typestock:
+    type: rest
+    resource: APIRestLicorneBundle\Controller\TypeStockController
+    prefix: /api
+
+categorie:
+    type: rest
+    resource: APIRestLicorneBundle\Controller\CategorieController
+    prefix: /api
+
+file:
+    type: rest
+    resource: APIRestLicorneBundle\Controller\FileController
+    prefix: /api

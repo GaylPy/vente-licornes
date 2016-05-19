@@ -45,7 +45,8 @@ class ClientController extends FOSRestController
      */
     public function getClientAction(Client $client)
     {
-        return array('client' => $client);
+        $view = $this->view(array('client' => $client), 200);
+        return $this->handleView($view);
     }
 
     /**
