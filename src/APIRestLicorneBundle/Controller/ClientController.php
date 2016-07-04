@@ -18,6 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class ClientController extends FOSRestController
 {
+
     /**
      * Renvoi la liste complète des clients
      *
@@ -220,5 +221,17 @@ class ClientController extends FOSRestController
         return $this->render('APIRestLicorneBundle:Default:index.html.twig', array(
            'form' => $form->createView()
         ));
+    }
+
+    public function getClientByNameAction($name){
+        $client = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Client')->findOneBy(array(
+            'nom' => $name
+        ));
+
+        if(!is_object($client)){
+            throw $this->createNotFoundException();
+        }
+
+        return $client;
     }
 }

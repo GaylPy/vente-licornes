@@ -1,4 +1,4 @@
 services:
-#    api_rest_licorne.example:
-#        class: APIRestLicorneBundle\Example
-#        arguments: ["@service_id", "plain_value", %parameter%]
+  app_core.produit_manager:
+    class: APIRestLicorneBundle\Entity\Manager\ProduitManager
+    arguments: ["@doctrine.orm.entity_manager"]

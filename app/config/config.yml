@@ -78,28 +78,15 @@ sensio_framework_extra:
 fos_rest:
     param_fetcher_listener: true
     body_listener: true
-    format_listener: false
-    view:
-        view_response_listener: false
-        formats:
-            json : true
-        templating_formats:
-            html: true
-        force_redirects:
-            html: true
-        failed_validation: HTTP_BAD_REQUEST
-        default_engine: twig
-    routing_loader:
-        default_format: json
-        include_format: false
-
-fos_rest:
-    param_fetcher_listener: true
-    body_listener: true
+    body_converter:
+            enabled: true
+            validate: true
+            validation_errors_argument: violations
     format_listener: true
     view:
         view_response_listener: 'force'
         formats:
+            xml: true
             json : true
         templating_formats:
             html: true
@@ -110,15 +97,4 @@ fos_rest:
     routing_loader:
         default_format: json
 
-fos_rest:
-    param_fetcher_listener: true
-    body_listener: true
-    format_listener: false
-    view:
-        view_response_listener: false
-        formats:
-            json: true
-        default_engine: twig
-    routing_loader:
-        default_format: json
-        include_format: false
+nelmio_api_doc: ~

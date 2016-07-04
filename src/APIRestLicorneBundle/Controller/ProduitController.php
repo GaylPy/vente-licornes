@@ -13,58 +13,102 @@ use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-
-/**
- * @RouteResource("Produit")
- * */
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+use APIRestLicorneBundle\Entity\Manager\ProduitManager;
 
 class ProduitController extends FOSRestController
 {
     /**
-     * @return array
-     * @View()
+     *
+     * @ApiDoc(
+     *     section="Produits",
+     *     resource=true,
+     *     description="Get the list of all categories.",
+     *     statusCodes={
+     *          200="Returned when successful",
+     *     }
+     * )
      */
-    public function cgetAction()
+    public function getProduitsAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $produits = $em->getRepository('APIRestLicorneBundle:Produit')->findAll();
-
-        $view = $this->view(array('produits' => $produits), 200);
-
-        return $this->handleView($view);
+        return $this->getDoctrine()->getRepository('APIRestLicorneBundle:Produit')->findAll();
     }
 
     /**
-     * @param Produit $produit
-     * @return array
-     * @View()
-     * @ParamConverter("Produit", class="APIRestLicorneBundle:Produit")
-     */
-    public function getAction(Produit $produit)
-    {
-        return array('produit' => $produit);
-    }
-
-    /**
+     * @ApiDoc(
+     *     section="Produits",
+     *     resource=true,
+     *     description="Get one product.",
+     *     requirements={
+     *          {
+     *              "name"="id",
+     *              "dataType"="integer",
+     *              "requirement"="\d+",
+     *              "description"="The product unique identifier."
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Returned when successful",
+     *      }
+     * )
      *
      */
-    public function postAction(Produit $produit)
+    public function getProduitAction(Produit $produit)
     {
-
+        return $produit;
     }
 
     /**
+     * @ParamConverter("produit", converter="fos_rest.request_body")
      *
+     * @ApiDoc(
+     *      section="Produits",
+     *      description="Creates a new product.",
+     *      statusCodes={
+     *          201="Returned if product has been successfully created",
+     *          400="Returned if errors",
+     *          500="Returned if server error"
+     *      }
+     * )
      */
-    public function editAction(Produit $produit)
+    public function postProduitsAction(Produit $produit, ConstraintViolationListInterface $violations)
     {
+        if (count($violations)) {
+            return $this->view($violations, 400);
+        }
+        $this->get('app_core.produit_manager')->save($produit);
 
+        return $this->view(null, 201,
+            [
+                'Location' => $this->generateUrl('get_produit', [ 'produit' => $produit->getId()]),
+            ]);
     }
 
-    public function deleteAction(Produit $produit)
+    /**
+     * @ApiDoc(
+     *      section="Produits",
+     *      description="Delete an existing product.",
+     *      statusCodes={
+     *          201="Returned if product has been successfully deleted",
+     *          400="Returned if product does not exist",
+     *          500="Returned if server error"
+     *      },
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "dataType"="integer",
+     *              "requirement"="\d+",
+     *              "description"="The product unique identifier."
+     *          }
+     *      },
+     * )
+     */
+    public function deleteProduitAction(Produit $produit)
     {
- 
+        $this->get('app_core.produit_manager')->remove($produit);
+
+        return $this->view('', Response::HTTP_NO_CONTENT);
     }
 
 

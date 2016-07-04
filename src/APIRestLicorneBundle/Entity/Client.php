@@ -3,12 +3,15 @@
 namespace APIRestLicorneBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
 
 /**
  * Client
  *
  * @ORM\Table(name="client")
  * @ORM\Entity(repositoryClass="APIRestLicorneBundle\Repository\ClientRepository")
+ * @ExclusionPolicy("all")
  */
 class Client
 {
@@ -28,6 +31,8 @@ class Client
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Expose
+     *
      */
     private $id;
 
@@ -35,6 +40,8 @@ class Client
      * @var string
      *
      * @ORM\Column(name="prenom", type="string", length=255)
+     * @Expose
+     *
      */
     private $prenom;
 
@@ -42,6 +49,7 @@ class Client
      * @var string
      *
      * @ORM\Column(name="nom", type="string", length=255, nullable=true)
+     * @Expose
      */
     private $nom;
 
@@ -49,6 +57,7 @@ class Client
      * @var \DateTime
      *
      * @ORM\Column(name="dateNaissance", type="datetime", nullable=true)
+     * @Expose
      */
     private $dateNaissance;
 
@@ -56,6 +65,7 @@ class Client
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=45, nullable=true)
+     * @Expose
      */
     private $email;
 
