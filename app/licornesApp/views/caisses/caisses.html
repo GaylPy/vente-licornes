@@ -147,7 +147,7 @@
                                 <td></td>  
                                 <td></td>  
                                 <td>TTC</td>  
-                                <td>{{(vm.ht*vm.tva)/100}}€</td>  
+                                <td>{{vm.ht*(vm.tva/100+1)}}€</td>  
                                 <td></td>  
                             </tr>        
                             <tr>
@@ -169,7 +169,7 @@
                     <button  class="btn btn-primary " data-ng-click="vm.exportInvoice()">Générer la facture</button>   
                 </span>       
                 <span ng-class="{'invoice-generation': !vm.cart.confirmed }" >
-                    <button  class="btn btn-success" data-ng-click="vm.exportInvoice()">Terminer</button>   
+                    <button  class="btn btn-success" data-ng-click="vm.initCart()">Terminer</button>   
                 </span>    
              </div>            
         </div>

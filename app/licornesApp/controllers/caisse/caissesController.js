@@ -24,7 +24,11 @@
         vm.totalRecords = 0;
         vm.pageSize = 10;
         vm.currentPage = 1;
-
+        
+        vm.initCart = function(){
+            vm = this;
+            console.log(vm);
+        }
         vm.pageChanged = function (page) {
             vm.currentPage = page;
             getLicornesSummary();
@@ -130,16 +134,6 @@
             saveAs(blob, "Facture.xls");
         };            
         
-        //function createWatches() {
-        //    //Watch searchText value and pass it and the licornes to nameCityStateFilter
-        //    //Doing this instead of adding the filter to ng-repeat allows it to only be run once (rather than twice)
-        //    //while also accessing the filtered count via vm.filteredCount above
-
-        //    //Better to handle this using ng-change on <input>. See searchTextChanged() function.
-        //    vm.$watch("searchText", function (filterText) {
-        //        filterLicornes(filterText);
-        //    });
-        //}
 
         function getLicornesSummary() {
             dataService.getLicornesSummary(vm.currentPage - 1, vm.pageSize)
