@@ -64,7 +64,7 @@ class Client
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=45, nullable=true)
+     * @ORM\Column(name="email", type="string", length=45)
      * @Expose
      */
     private $email;
@@ -72,7 +72,8 @@ class Client
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="text", nullable=true)
+     * @ORM\Column(name="password", type="string", length=50)
+     * @Expose
      */
     private $password;
 

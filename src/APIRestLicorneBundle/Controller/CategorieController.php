@@ -15,55 +15,104 @@ use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
-
-/**
- * @RouteResource("Categorie")
- * */
 
 class CategorieController extends FOSRestController
 {
     /**
-     * @return array
-     * @View()
      *
+     * @ApiDoc(
+     *     section="Categories",
+     *     resource=true,
+     *     description="Get the list of all categories.",
+     *     statusCodes={
+     *          200="Returned when successful",
+     *     }
+     * )
      */
-    public function cgetAction()
+    public function getCategoriesAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $categories = $em->getRepository('APIRestLicorneBundle:Categorie')->findAll();
-
-        $view = $this->view(array('categories' => $categories), 200);
-
-        return $this->handleView($view);
-
+        return $this->getDoctrine()->getRepository('APIRestLicorneBundle:Categorie')->findAll();
     }
 
     /**
-     * @param Categorie $categorie
-     * @return array
-     * @View()
-     * @ParamConverter("Categorie", class="APIRestLicorneBundle:Categorie")
+     * @ApiDoc(
+     *     section="Categories",
+     *     resource=true,
+     *     description="Get one category.",
+     *     requirements={
+     *          {
+     *              "name"="id",
+     *              "dataType"="integer",
+     *              "requirement"="\d+",
+     *              "description"="The category unique identifier."
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Returned when successful",
+     *      }
+     * )
+     *
      */
-    public function getAction(Categorie $categorie)
+    public function getCategorieAction(Categorie $categorie)
     {
-        return array('categorie' => $categorie);
+        return $categorie;
     }
 
     /**
+     * @ParamConverter("categorie", converter="fos_rest.request_body")
      *
+     * @ApiDoc(
+     *      section="Categories",
+     *      description="Creates a new categorie.",
+     *      statusCodes={
+     *          201="Returned if categorie has been successfully created",
+     *          400="Returned if errors",
+     *          500="Returned if server error"
+     *      }
+     * )
      */
-    public function postAction(Categorie $categorie)
+    public function postCategorieAction(Categorie $categorie, ConstraintViolationListInterface $violations)
     {
+        if (count($violations)) {
+            return $this->view($violations, 400);
+        }
 
+        $this->getDoctrine()->getManager()->persist($categorie);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->view(null, 201,
+            [
+                'Location' => $this->generateUrl('get_categorie', [ 'categorie' => $categorie->getId()]),
+            ]);
     }
 
     /**
-     *
+     * @ApiDoc(
+     *      section="Categories",
+     *      description="Delete an existing categorie.",
+     *      statusCodes={
+     *          201="Returned if categorie has been successfully deleted",
+     *          400="Returned if categorie does not exist",
+     *          500="Returned if server error"
+     *      },
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "dataType"="integer",
+     *              "requirement"="\d+",
+     *              "description"="The categorie unique identifier."
+     *          }
+     *      },
+     * )
      */
-    public function editAction(Categorie $categorie)
+    public function deleteCategorieAction(Categorie $categorie)
     {
+        $this->getDoctrine()->getManager()->remove($categorie);
+        $this->getDoctrine()->getManager()->flush();
 
+        return $this->view('', Response::HTTP_NO_CONTENT);
     }
 }

@@ -15,98 +15,129 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class ClientController extends FOSRestController
 {
 
     /**
-     * Renvoi la liste complète des clients
      *
-     * @return array
-     * @View()
+     * @ApiDoc(
+     *     section="Clients",
+     *     resource=true,
+     *     description="Get the list of all clients.",
+     *     statusCodes={
+     *          200="Returned when successful",
+     *     }
+     * )
      */
     public function getClientsAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $clients = $em->getRepository('APIRestLicorneBundle:Client')->findAll();
-
-        $view = $this->view(array('clients' => $clients), 200);
-
-        return $this->handleView($view);
+        return $this->getDoctrine()->getRepository('APIRestLicorneBundle:Client')->findAll();
     }
 
     /**
-     * Renvoi un client
+     * @ApiDoc(
+     *     section="Clients",
+     *     resource=true,
+     *     description="Get one client.",
+     *     requirements={
+     *          {
+     *              "name"="id",
+     *              "dataType"="integer",
+     *              "requirement"="\d+",
+     *              "description"="The client unique identifier."
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Returned when successful",
+     *      }
+     * )
      *
-     * @param Client $client
-     * @return array
-     * @View()
-     * @ParamConverter("client", class="APIRestLicorneBundle:Client")
      */
     public function getClientAction(Client $client)
     {
-        $view = $this->view(array('client' => $client), 200);
-        return $this->handleView($view);
+        return $client;
     }
 
     /**
-     * Créer un client
+     * @ParamConverter("client", converter="fos_rest.request_body")
      *
-     * @View(statusCode=200)
-     * @param Request $request
-     * @return Response
-     *
-    */
-    public function postClientAction(Request $request)
+     * @ApiDoc(
+     *      section="Clients",
+     *      description="Creates a new client.",
+     *      statusCodes={
+     *          201="Returned if product has been successfully created",
+     *          400="Returned if errors",
+     *          500="Returned if server error"
+     *      }
+     * )
+     */
+    public function postClientsAction(Client $client, ConstraintViolationListInterface $violations)
     {
-        $response = new Response();
-        $response->setStatusCode(200);
-        $response->headers->set('Content-Type', 'application/json');
-        $response->headers->set('Access-Control-Allow-Origin', 'http://unicorn');
-
-        $content = 'Vide';
-
-        if($request->getMethod() == 'POST') {
-            $obj = json_decode($request->getContent());
-
-            $entity = new Client();
-
-            if(empty($obj)){
-                $error = array('message' => 'Erreur interne.');
-                $content = json_encode($error);
-            }
-            else{
-                if(isset($obj->{'firstname'}) && isset($obj->{'name'}) && isset($obj->{'email'}) && isset($obj->{'password'})){
-
-                    $entity->setPrenom($obj->{'firstname'});
-                    $entity->setNom($obj->{'name'});
-                    $entity->setEmail($obj->{'email'});
-                    $entity->setPassword($obj->{'password'});
-                    $em = $this->getDoctrine()->getManager();
-                    $em->persist($entity);
-                    $em->flush();
-
-                    $success = array('message' => 'ok');
-                    $content = json_encode($success);
-
-                }
-                else{
-                    $error = array('message' => 'Veuillez renseigner tous les champs.');
-                    $content = json_encode($error);
-                }
-            }
-        }
-        else{
-            $error = array('message' => 'Erreur interne');
-            $content = json_encode($error);
+        if (count($violations)) {
+            return $this->view($violations, 400);
         }
 
+        $this->getDoctrine()->getManager()->persist($client);
+        $this->getDoctrine()->getManager()->flush();
 
-        // prints the HTTP headers followed by the content
-        $response->setContent($content);
-        $response->send();
+        return $this->view(null, 201,
+            [
+                'Location' => $this->generateUrl('get_client', [ 'client' => $client->getId()]),
+            ]);
+    }
 
+    /**
+     * @ApiDoc(
+     *      section="Clients",
+     *      description="Delete an existing client.",
+     *      statusCodes={
+     *          201="Returned if product has been successfully deleted",
+     *          400="Returned if product does not exist",
+     *          500="Returned if server error"
+     *      },
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "dataType"="integer",
+     *              "requirement"="\d+",
+     *              "description"="The client unique identifier."
+     *          }
+     *      },
+     * )
+     */
+    public function deleteClientAction(Client $client)
+    {
+        $this->getDoctrine()->getManager()->remove($client);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->view('', Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Clients",
+     *     resource=true,
+     *     description="Get one client by email.",
+     *     requirements={
+     *          {
+     *              "name"="email",
+     *              "dataType"="string",
+     *              "description"="The client email."
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Returned when successful",
+     *      }
+     * )
+     *
+     */
+    public function getClientByEmailAction($email){
+        return $this->getDoctrine()->getRepository('APIRestLicorneBundle:Client')->findOneBy(array(
+            'email' => $email
+        ));
     }
 
     /**
@@ -116,22 +147,30 @@ class ClientController extends FOSRestController
      * @param Request $request
      * @return Response
      * @Method({"POST"})
+     *
+     * @ApiDoc(
+     *     section="Clients",
+     *     resource=true,
+     *     description="Connect client.",
+     *      statusCodes={
+     *          200="Returned when successful",
+     *          400="Returned if client doesn't exist",
+     *          405="Returned if method not allowed",
+     *          500="Returned if server error"
+     *      }
+     * )
      */
     public function postConnexionClientAction(Request $request)
     {
-
         $response = new Response();
-        $response->setStatusCode(200);
-        $response->headers->set('Content-Type', 'application/json');
-        $response->headers->set('Access-Control-Allow-Origin', 'http://unicorn');
 
-        $content = 'Vide';
+        $response->headers->set('Content-Type', 'application/json');
 
         if($request->getMethod() == 'POST') {
             $obj = json_decode($request->getContent());
+
             if(empty($obj)){
-                $error = array('message' => 'Erreur interne.');
-                $content = json_encode($error);
+                $response->setStatusCode(500);
             }
             else {
                 $em = $this->getDoctrine()->getManager();
@@ -139,99 +178,21 @@ class ClientController extends FOSRestController
                     'email' => $obj->{'email'},
                     'password' => $obj->{'password'}
                 ));
-
                 if(isset($client)){
-                    $success = array('message' => 'ok');
-                    $content = json_encode($success);
+                    $response->setStatusCode(200);
                 }
                 else{
-                    $error = array('message' => 'ko');
-                    $content = json_encode($error);
+                    $response->setStatusCode(400);
                 }
             }
         }
         else{
-            $error = array('message' => 'Erreur interne');
-            $content = json_encode($error);
+            $response->setStatusCode(405);
         }
-
-
-        // prints the HTTP headers followed by the content
-        $response->setContent($content);
         $response->send();
+
+        return $response;
     }
 
-    /**
-     * Modifier un client
-     *
-     * @param Client $client
-     * @return array
-     * @View()
-     * @ParamConverter("client", class="APIRestLicorneBundle:Client")
-     * @Method({"PUT"})
-     */
-    public function putClientAction(Request $request, Client $client)
-    {
-        $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm(ClientType::class, $client);
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $em->persist($client);
-            $em->flush();
-
-            return $this->handleView($this->view(null, Codes::HTTP_NO_CONTENT));
-        }
-
-        return array(
-            'form' => $form,
-        );
-    }
-
-    /**
-     * Supprimer un client
-     *
-     * @param Client $client
-     * @return array
-     * @View()
-     * @ParamConverter("client", class="APIRestLicorneBundle:Client")
-     * @Method({"DELETE"})
-     */
-    public function deleteClientAction(Client $client)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $em->remove($client);
-        $em->flush();
-
-        $clients = $em->getRepository('APIRestLicorneBundle:Client')->findAll();
-
-        return array('clients' => $clients);
-    }
-
-    /**
-     * @Route("/client/create")
-     *
-     */
-    public function createFormClientAction(){
-        $entity = new Client();
-        $form = $this->createForm(ClientType::class, $entity);
-
-        return $this->render('APIRestLicorneBundle:Default:index.html.twig', array(
-           'form' => $form->createView()
-        ));
-    }
-
-    public function getClientByNameAction($name){
-        $client = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Client')->findOneBy(array(
-            'nom' => $name
-        ));
-
-        if(!is_object($client)){
-            throw $this->createNotFoundException();
-        }
-
-        return $client;
-    }
 }

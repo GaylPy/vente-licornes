@@ -77,7 +77,9 @@ class ProduitController extends FOSRestController
         if (count($violations)) {
             return $this->view($violations, 400);
         }
-        $this->get('app_core.produit_manager')->save($produit);
+
+        $this->getDoctrine()->getManager()->persist($produit);
+        $this->getDoctrine()->getManager()->flush();
 
         return $this->view(null, 201,
             [
@@ -106,7 +108,8 @@ class ProduitController extends FOSRestController
      */
     public function deleteProduitAction(Produit $produit)
     {
-        $this->get('app_core.produit_manager')->remove($produit);
+        $this->getDoctrine()->getManager()->remove($produit);
+        $this->getDoctrine()->getManager()->flush();
 
         return $this->view('', Response::HTTP_NO_CONTENT);
     }
