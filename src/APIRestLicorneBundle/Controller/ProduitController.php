@@ -2,10 +2,12 @@
 
 namespace APIRestLicorneBundle\Controller;
 
+use APIRestLicorneBundle\Entity\Ecurie;
 use APIRestLicorneBundle\Entity\Prix;
 use APIRestLicorneBundle\Entity\Produit;
 use APIRestLicorneBundle\Entity\Stock;
 use APIRestLicorneBundle\Form\ProduitType;
+use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Util\Codes;
@@ -21,6 +23,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use APIRestLicorneBundle\Entity\Manager\ProduitManager;
 // Get Route Definition
 use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
 
 
 class ProduitController extends FOSRestController
@@ -221,9 +224,18 @@ class ProduitController extends FOSRestController
     }
 
     /**
+     *
+     * Use the "locale" parameter as the default value
+     * @QueryParam(name="produit", default="\d+")
+     *
+     * The "baz" container parameter is used here as requirements
+     * Can be used for complex or auto-generated regex
+     * @QueryParam(name="ecurie", requirements="\d+")
+     *
+     *
      * @ApiDoc(
      *      section="Produits",
-     *      description="Delete an existing product.",
+     *      description="Delete an existing product. /api/produits?produit={id}&ecurite={id}",
      *      statusCodes={
      *          201="Returned if product has been successfully deleted",
      *          400="Returned if product does not exist",
@@ -235,13 +247,61 @@ class ProduitController extends FOSRestController
      *              "dataType"="integer",
      *              "requirement"="\d+",
      *              "description"="The product unique identifier."
+     *          },
+     *          {
+     *              "name"="idecurie",
+     *              "dataType"="integer",
+     *              "requirement"="\d+",
+     *              "description"="The ecurie unique identifier."
      *          }
      *      },
      * )
      */
-    public function deleteProduitAction(Produit $produit)
+    public function deleteProduitsAction(ParamFetcher $paramFetcher)
     {
-        $this->getDoctrine()->getManager()->remove($produit);
+        /*
+        $prix = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Prix')->findOneBy(array(
+            'produit' => $produit,
+            'ecurie' => $ecurie
+        ));
+        $this->getDoctrine()->getManager()->remove($prix);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->view('', Response::HTTP_NO_CONTENT);
+*/
+        // ParamFetcher params can be dynamically added during runtime instead of only compile time annotations.
+        $dynamicRequestParam = new RequestParam();
+        $dynamicRequestParam->name = "dynamic_request";
+        $dynamicRequestParam->requirements = "\d+";
+        $paramFetcher->addParam($dynamicRequestParam);
+
+        $dynamicQueryParam = new QueryParam();
+        $dynamicQueryParam->name = "dynamic_query";
+        $dynamicQueryParam->requirements="[a-z]+";
+        $paramFetcher->addParam($dynamicQueryParam);
+
+        $produit = $paramFetcher->get('produit');
+        $ecurie = $paramFetcher->get('ecurie');
+
+        $prix = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Prix')->findOneBy(array(
+            'produit' => $produit,
+            'ecurie' => $ecurie
+        ));
+
+        $stock = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Stock')->findOneBy(array(
+            'produit' => $produit,
+            'ecurie' => $ecurie
+        ));
+
+        if(!$prix || !$stock){
+            $response = new Response();
+            $response->setStatusCode('400');
+
+            return $response;
+        }
+
+        $this->getDoctrine()->getManager()->remove($stock);
+        $this->getDoctrine()->getManager()->remove($prix);
         $this->getDoctrine()->getManager()->flush();
 
         return $this->view('', Response::HTTP_NO_CONTENT);

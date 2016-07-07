@@ -18,7 +18,7 @@ class Stock
     private $ecurie;
 
     /**
-     * @ORM\OneToOne(targetEntity="APIRestLicorneBundle\Entity\Produit")
+     * @ORM\ManyToOne(targetEntity="APIRestLicorneBundle\Entity\Produit", cascade={"persist", "remove"})
      */
     private $produit;
 
