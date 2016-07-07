@@ -24,7 +24,7 @@ class ProduitController extends FOSRestController
      * @ApiDoc(
      *     section="Produits",
      *     resource=true,
-     *     description="Get the list of all categories.",
+     *     description="Get the list of all produits.",
      *     statusCodes={
      *          200="Returned when successful",
      *     }

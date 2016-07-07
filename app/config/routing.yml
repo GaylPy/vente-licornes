@@ -18,6 +18,11 @@ produit:
     resource: APIRestLicorneBundle\Controller\ProduitController
     prefix: /api
 
+pays:
+    type: rest
+    resource: APIRestLicorneBundle\Controller\PaysController
+    prefix: /api
+
 typestock:
     type: rest
     resource: APIRestLicorneBundle\Controller\TypeStockController

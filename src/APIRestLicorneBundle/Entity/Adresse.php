@@ -3,6 +3,8 @@
 namespace APIRestLicorneBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\VirtualProperty;
+use JMS\Serializer\Annotation\SerializedName;
 
 /**
  * Adresse
@@ -90,9 +92,19 @@ class Adresse
      * Get pays
      *
      * @return \APIRestLicorneBundle\Entity\Pays
+     * @VirtualProperty
      */
     public function getPays()
     {
         return $this->pays;
+    }
+
+    /**
+     * @VirtualProperty
+     * @SerializedName("foo")
+     */
+    public function bar()
+    {
+        return $this->getPays()->getId();
     }
 }

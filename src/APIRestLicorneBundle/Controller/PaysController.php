@@ -2,9 +2,10 @@
 
 namespace APIRestLicorneBundle\Controller;
 
-use APIRestLicorneBundle\Entity\Adresse;
-use APIRestLicorneBundle\Form\AdresseType;
+use APIRestLicorneBundle\Entity\Pays;
+use APIRestLicorneBundle\Entity\Produit;
 use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Util\Codes;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -13,38 +14,39 @@ use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+use APIRestLicorneBundle\Entity\Manager\ProduitManager;
 
-class AdresseController extends FOSRestController
+class PaysController extends FOSRestController
 {
     /**
      *
      * @ApiDoc(
-     *     section="Adresse",
+     *     section="Country",
      *     resource=true,
-     *     description="Get the list of all Adresse.",
+     *     description="Get the list of all Country.",
      *     statusCodes={
      *          200="Returned when successful",
      *     }
      * )
      */
-    public function getAdressesAction()
+    public function getCountriesAction()
     {
-        return $this->getDoctrine()->getRepository('APIRestLicorneBundle:Adresse')->findAll();
+        return $this->getDoctrine()->getRepository('APIRestLicorneBundle:Pays')->findAll();
     }
 
     /**
      * @ApiDoc(
-     *     section="Adresse",
+     *     section="Country",
      *     resource=true,
-     *     description="Get one Adresse.",
+     *     description="Get one country.",
      *     requirements={
      *          {
      *              "name"="id",
      *              "dataType"="integer",
      *              "requirement"="\d+",
-     *              "description"="The Adresse unique identifier."
+     *              "description"="The Country unique identifier."
      *          }
      *      },
      *      statusCodes={
@@ -53,17 +55,17 @@ class AdresseController extends FOSRestController
      * )
      *
      */
-    public function getAdresseAction(Adresse $adresse)
+    public function getCountryAction(Pays $pays)
     {
-        return $adresse;
+        return $pays;
     }
 
     /**
-     * @ParamConverter("adresse", converter="fos_rest.request_body")
+     * @ParamConverter("pays", converter="fos_rest.request_body")
      *
      * @ApiDoc(
-     *      section="Adresse",
-     *      description="Creates a new Adresse.",
+     *      section="Country",
+     *      description="Creates a new Country.",
      *      statusCodes={
      *          201="Returned if product has been successfully created",
      *          400="Returned if errors",
@@ -71,25 +73,25 @@ class AdresseController extends FOSRestController
      *      }
      * )
      */
-    public function postAdresseAction(Adresse $adresse, ConstraintViolationListInterface $violations)
+    public function postCountryAction(Pays $pays, ConstraintViolationListInterface $violations)
     {
         if (count($violations)) {
             return $this->view($violations, 400);
         }
 
-        $this->getDoctrine()->getManager()->persist($adresse);
+        $this->getDoctrine()->getManager()->persist($pays);
         $this->getDoctrine()->getManager()->flush();
 
         return $this->view(null, 201,
             [
-                'Location' => $this->generateUrl('get_adresse', [ 'adresse' => $adresse->getId()]),
+                'Location' => $this->generateUrl('get_country', [ 'pays' => $pays->getId()]),
             ]);
     }
 
     /**
      * @ApiDoc(
-     *      section="Adresse",
-     *      description="Delete an existing Adresse.",
+     *      section="Country",
+     *      description="Delete an existing Country.",
      *      statusCodes={
      *          201="Returned if product has been successfully deleted",
      *          400="Returned if product does not exist",
@@ -100,14 +102,14 @@ class AdresseController extends FOSRestController
      *              "name"="id",
      *              "dataType"="integer",
      *              "requirement"="\d+",
-     *              "description"="The Adresse unique identifier."
+     *              "description"="The Country unique identifier."
      *          }
      *      },
      * )
      */
-    public function deleteAdresseAction(Adresse $adresse)
+    public function deleteCountryAction(Pays $pays)
     {
-        $this->getDoctrine()->getManager()->remove($adresse);
+        $this->getDoctrine()->getManager()->remove($pays);
         $this->getDoctrine()->getManager()->flush();
 
         return $this->view('', Response::HTTP_NO_CONTENT);
