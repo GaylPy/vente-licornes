@@ -23,6 +23,11 @@ pays:
     resource: APIRestLicorneBundle\Controller\PaysController
     prefix: /api
 
+vente:
+    type: rest
+    resource: APIRestLicorneBundle\Controller\VenteController
+    prefix: /api
+
 typestock:
     type: rest
     resource: APIRestLicorneBundle\Controller\TypeStockController

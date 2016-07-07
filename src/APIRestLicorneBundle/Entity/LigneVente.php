@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class LigneVente
 {
     /**
-     * @ORM\OneToOne(targetEntity="APIRestLicorneBundle\Entity\Vente", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="APIRestLicorneBundle\Entity\Vente", cascade={"persist"})
      */
     private $vente;
 
