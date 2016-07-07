@@ -127,7 +127,7 @@
                                 <td>
                                     {{ item.order.price*item.quantity | number}}
                                 </td>
-                                <td><button class="btn btn-danger" data-ng-click="vm.removeFromCart(item)">Supprimer</button></td>
+                                <td><button name="removeProduct" class="btn btn-danger" data-ng-click="vm.removeFromCart(item)">Supprimer</button></td>
                             </tr>
                             <tr>
                                 <td></td>  
@@ -155,15 +155,15 @@
                                 <td></td>  
                                 <td>Num Fidélité</td>  
                                 <td>
-                                <input type="text" class="input-md" class="form-control" data-ng-model="vm.cart.numfid" required />
+                                <input id="inputFid" type="text" class="input-md" class="form-control" data-ng-model="vm.cart.numfid" />
                                 </td>  
                                 <td></td>  
                             </tr>                                                                
                         </tbody>
                     </table>     
                 </div>
-                <span ng-class="{'invoice-generation': vm.cart.confirmed }" >             
-                    <button class="btn btn-success" data-ng-click="vm.confirmSell()">Confirmer l'achat</button>          
+                <span  ng-class="{'invoice-generation': vm.cart.confirmed }" >             
+                    <button ng-show="vm.cart.length!==0" class="btn btn-success" data-ng-click="vm.confirmSell()">Confirmer l'achat</button>          
                 </span>
                 <span ng-class="{'invoice-generation': !vm.cart.confirmed }" >
                     <button  class="btn btn-primary " data-ng-click="vm.exportInvoice()">Générer la facture</button>   

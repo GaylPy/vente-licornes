@@ -88,6 +88,7 @@
             console.log("quantity :" + value.quantity);
             console.log("ecurie :" + idEcurie);
             console.log("licorneId :" + value.id);
+            
             });            
             console.log("num fid :" + vm.cart.numfid);
                 
@@ -97,8 +98,20 @@
         };
         
         function processSuccess() {
+            // Replace Inputs by values
+            // champs quantité
+             _.forEach(document.getElementsByName('quantity'), function(element) {
+                 var temp = element.value;
+                 element.outerHTML = "<p name='quantity'>"+temp+"</p>";
+            }); 
+            // champ fidélité
+            document.getElementById("inputFid").outerHTML = "<p>"+document.getElementById("inputFid").value+"</p>";
+            // champ supprimer
+            _.forEach(document.getElementsByName('removeProduct'), function(element){
+                element.remove();
+            });
             vm.cart.confirmed = true;    
-        }
+        };
 
         function processError(error) {
 
@@ -126,8 +139,9 @@
 
         vm.exportInvoice = function(){
         var header = '<meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';  
+
         var table = document.getElementById('exportable').innerHTML;
-       
+
         var blob = new Blob([header + table], {
                 type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
             });
