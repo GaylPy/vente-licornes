@@ -18,7 +18,7 @@ class Prix
     private $produit;
 
     /**
-     * @ORM\OneToOne(targetEntity="APIRestLicorneBundle\Entity\Ecurie", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="APIRestLicorneBundle\Entity\Ecurie", cascade={"persist"})
      */
     private $ecurie;
 

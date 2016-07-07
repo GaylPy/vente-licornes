@@ -16,6 +16,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use APIRestLicorneBundle\Entity\Manager\ProduitManager;
+// Get Route Definition
+use FOS\RestBundle\Controller\Annotations\Get;
+
 
 class ProduitController extends FOSRestController
 {
@@ -24,7 +27,7 @@ class ProduitController extends FOSRestController
      * @ApiDoc(
      *     section="Produits",
      *     resource=true,
-     *     description="Get the list of all produits.",
+     *     description="Recupère la liste de tous les produits.",
      *     statusCodes={
      *          200="Returned when successful",
      *     }
@@ -35,17 +38,18 @@ class ProduitController extends FOSRestController
         return $this->getDoctrine()->getRepository('APIRestLicorneBundle:Produit')->findAll();
     }
 
+
     /**
      * @ApiDoc(
      *     section="Produits",
      *     resource=true,
-     *     description="Get one product.",
+     *     description="Récupère un produit.",
      *     requirements={
      *          {
      *              "name"="id",
      *              "dataType"="integer",
      *              "requirement"="\d+",
-     *              "description"="The product unique identifier."
+     *              "description"="ID du produit."
      *          }
      *      },
      *      statusCodes={
@@ -113,6 +117,34 @@ class ProduitController extends FOSRestController
 
         return $this->view('', Response::HTTP_NO_CONTENT);
     }
+
+    /**
+     *
+     * @ApiDoc(
+     *     section="Produits",
+     *     resource=true,
+     *     description="Recupere la liste de tous les produits d'une ecurie avec les prix.",
+     *     statusCodes={
+     *          200="Returned when successful",
+     *     },
+     *     requirements={
+     *          {
+     *              "name"="id",
+     *              "dataType"="integer",
+     *              "requirement"="\d+",
+     *              "description"="L'identifiant de l'ecurie (1 pour ecurie de Lille)."
+     *          }
+     *      },
+     * )
+     *
+    */
+    public function getProduitsEcurieAction($id)
+    {
+        return $this->getDoctrine()->getRepository('APIRestLicorneBundle:Prix')->findBy(array(
+            'ecurie' => $id
+        ));
+    }
+
 
 
 }

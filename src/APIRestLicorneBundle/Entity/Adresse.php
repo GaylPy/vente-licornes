@@ -15,7 +15,7 @@ use JMS\Serializer\Annotation\SerializedName;
 class Adresse
 {
     /**
-     * @ORM\OneToOne(targetEntity="APIRestLicorneBundle\Entity\Pays", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="APIRestLicorneBundle\Entity\Pays", cascade={"persist"})
      */
     private $pays;
 
