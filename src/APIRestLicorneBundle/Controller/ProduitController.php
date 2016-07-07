@@ -2,6 +2,7 @@
 
 namespace APIRestLicorneBundle\Controller;
 
+use APIRestLicorneBundle\Entity\Prix;
 use APIRestLicorneBundle\Entity\Produit;
 use APIRestLicorneBundle\Form\ProduitType;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -137,6 +138,8 @@ class ProduitController extends FOSRestController
                 $produit = new Produit();
                 $produit->setNom($nom);
 
+                // Catégorie
+
                 if(isset($params['categorie'])){
                     $cat = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Categorie')->find($params['categorie']);
 
@@ -145,7 +148,20 @@ class ProduitController extends FOSRestController
                     }
                 }
 
+                // AJout du prix
+                if(isset($params['ecurie']) && isset($params['prix'])){
+                    $ecurie = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Ecurie')->find($params['ecurie']);
+
+                    if($ecurie){
+                        $prix = new Prix();
+                        $prix->setEcurie($ecurie);
+                        $prix->setPrix($params['prix']);
+                        $prix->setProduit($produit);
+                    }
+                }
+
                 $this->getDoctrine()->getManager()->persist($produit);
+                $this->getDoctrine()->getManager()->persist($prix);
                 $this->getDoctrine()->getManager()->flush();
                 $response->setStatusCode('201');
             }
