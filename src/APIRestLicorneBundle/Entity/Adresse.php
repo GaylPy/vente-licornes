@@ -98,13 +98,4 @@ class Adresse
     {
         return $this->pays;
     }
-
-    /**
-     * @VirtualProperty
-     * @SerializedName("foo")
-     */
-    public function bar()
-    {
-        return $this->getPays()->getId();
-    }
 }
