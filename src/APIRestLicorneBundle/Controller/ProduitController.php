@@ -4,6 +4,7 @@ namespace APIRestLicorneBundle\Controller;
 
 use APIRestLicorneBundle\Entity\Prix;
 use APIRestLicorneBundle\Entity\Produit;
+use APIRestLicorneBundle\Entity\Stock;
 use APIRestLicorneBundle\Form\ProduitType;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
@@ -110,6 +111,24 @@ class ProduitController extends FOSRestController
      *              "dataType"="integer",
      *              "requirement"="non requi",
      *              "description"="Id de la categorie du produit"
+     *          },
+     *          {
+     *              "name"="ecurie",
+     *              "dataType"="integer",
+     *              "requirement"="non requis",
+     *              "description"="Id de l'ecurie du produit"
+     *          },
+     *          {
+     *              "name"="prix",
+     *              "dataType"="float",
+     *              "requirement"="non requi",
+     *              "description"="prix du produit"
+     *          },
+     *          {
+     *              "name"="quantite",
+     *              "dataType"="integer",
+     *              "requirement"="non requi",
+     *              "description"="Quantite de produit"
      *          }
      *      },
      *      statusCodes={
@@ -157,11 +176,21 @@ class ProduitController extends FOSRestController
                         $prix->setEcurie($ecurie);
                         $prix->setPrix($params['prix']);
                         $prix->setProduit($produit);
+                        $this->getDoctrine()->getManager()->persist($prix);
+
+                        if(isset($params['quantite'])){
+                            $stock = new Stock();
+                            $stock->setEcurie($ecurie);
+                            $stock->setProduit($produit);
+                            $stock->setQuantite($params['quantite']);
+
+                            $this->getDoctrine()->getManager()->persist($stock);
+                        }
                     }
                 }
 
+
                 $this->getDoctrine()->getManager()->persist($produit);
-                $this->getDoctrine()->getManager()->persist($prix);
                 $this->getDoctrine()->getManager()->flush();
                 $response->setStatusCode('201');
             }

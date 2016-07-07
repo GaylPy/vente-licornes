@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Stock
 {
     /**
-     * @ORM\OneToOne(targetEntity="APIRestLicorneBundle\Entity\Ecurie")
+     * @ORM\ManyToOne(targetEntity="APIRestLicorneBundle\Entity\Ecurie")
      */
     private $ecurie;
 
