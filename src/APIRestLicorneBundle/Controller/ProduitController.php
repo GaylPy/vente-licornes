@@ -3,6 +3,7 @@
 namespace APIRestLicorneBundle\Controller;
 
 use APIRestLicorneBundle\Entity\Produit;
+use APIRestLicorneBundle\Form\ProduitType;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
 use FOS\RestBundle\Util\Codes;
@@ -75,7 +76,7 @@ class ProduitController extends FOSRestController
      *          500="Returned if server error"
      *      }
      * )
-     */
+
     public function postProduitsAction(Produit $produit, ConstraintViolationListInterface $violations)
     {
         if (count($violations)) {
@@ -89,6 +90,89 @@ class ProduitController extends FOSRestController
             [
                 'Location' => $this->generateUrl('get_produit', [ 'produit' => $produit->getId()]),
             ]);
+    }
+     */
+    /**
+     *
+     * @ApiDoc(
+     *      section="Produits",
+     *      description="Creates a new product",
+     *      requirements={
+     *          {
+     *              "name"="nom",
+     *              "dataType"="string",
+     *              "requirement"="requis",
+     *              "description"="Nom du produit"
+     *          },
+     *          {
+     *              "name"="categorie",
+     *              "dataType"="integer",
+     *              "requirement"="non requi",
+     *              "description"="Id de la categorie du produit"
+     *          }
+     *      },
+     *      statusCodes={
+     *          201="Returned if product has been successfully created",
+     *          400="Bad Request : La syntaxe de la requête est erronée.",
+     *          500="Returned if server error"
+     *      }
+     * )
+     */
+    public function postProduitsAction(Request $request)
+    {
+        $response = new Response();
+
+        $content = $request->getContent();
+        if (!empty($content))
+        {
+            $params = array();
+            $params = json_decode($content, true); // 2nd param to get as array
+
+            if(empty($params['nom'])){
+                $response->setStatusCode('400');
+            }
+            else{
+                $nom = $params['nom'];
+
+                $produit = new Produit();
+                $produit->setNom($nom);
+
+                if(isset($params['categorie'])){
+                    $cat = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Categorie')->find($params['categorie']);
+
+                    if($cat){
+                        $produit->setCategorie($cat);
+                    }
+                }
+
+                $this->getDoctrine()->getManager()->persist($produit);
+                $this->getDoctrine()->getManager()->flush();
+                $response->setStatusCode('201');
+            }
+        }
+        else{
+            $response->setStatusCode('400');
+        }
+
+        return $response;
+
+        /*
+        $entity = new Produit();
+        $form = $this->createForm(ProduitType::class, $entity, array("method" => $request->getMethod()));
+        $form->handleRequest($request);
+
+
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($entity);
+            $em->flush();
+            return $entity;
+        }
+        else{
+            var_dump($form);die();
+        }
+        return $this->handleView($this->view(array('errors' => $form->getErrors()), Codes::HTTP_INTERNAL_SERVER_ERROR));
+    */
     }
 
     /**
