@@ -17,7 +17,7 @@ use JMS\Serializer\Annotation\VirtualProperty;
 class Produit
 {
     /**
-     * @ORM\OneToOne(targetEntity="APIRestLicorneBundle\Entity\TypeStock", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="APIRestLicorneBundle\Entity\TypeStock", cascade={"persist"})
      */
     private $typeStock;
 

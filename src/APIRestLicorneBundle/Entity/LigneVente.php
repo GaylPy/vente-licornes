@@ -18,7 +18,7 @@ class LigneVente
     private $vente;
 
     /**
-     * @ORM\OneToOne(targetEntity="APIRestLicorneBundle\Entity\Produit")
+     * @ORM\ManyToOne(targetEntity="APIRestLicorneBundle\Entity\Produit")
      */
     private $produit;
 

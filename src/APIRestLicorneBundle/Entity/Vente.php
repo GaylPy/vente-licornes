@@ -13,17 +13,17 @@ use Doctrine\ORM\Mapping as ORM;
 class Vente
 {
     /**
-     * @ORM\OneToOne(targetEntity="APIRestLicorneBundle\Entity\Client")
+     * @ORM\ManyToOne(targetEntity="APIRestLicorneBundle\Entity\Client")
      */
     private $client;
 
     /**
-     * @ORM\OneToOne(targetEntity="APIRestLicorneBundle\Entity\Ecurie")
+     * @ORM\ManyToOne(targetEntity="APIRestLicorneBundle\Entity\Ecurie")
      */
     private $ecurie;
 
     /**
-     * @ORM\OneToOne(targetEntity="APIRestLicorneBundle\Entity\Promo")
+     * @ORM\ManyToOne(targetEntity="APIRestLicorneBundle\Entity\Promo")
      */
     private $promo;
 

@@ -16,7 +16,7 @@ use JMS\Serializer\Annotation\Expose;
 class Client
 {
     /**
-     * @ORM\OneToOne(targetEntity="APIRestLicorneBundle\Entity\Adresse", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="APIRestLicorneBundle\Entity\Adresse", cascade={"persist"})
      */
     private $adresse;
 
