@@ -83,10 +83,7 @@ class ClientController extends FOSRestController
         $this->getDoctrine()->getManager()->persist($client);
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->view(null, 201,
-            [
-                'Location' => $this->generateUrl('get_client', [ 'client' => $client->getId()]),
-            ]);
+        return $client;
     }
 
     /**

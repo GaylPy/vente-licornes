@@ -34,9 +34,9 @@ class Prix
     /**
      * @var float
      *
-     * @ORM\Column(name="prixHT", type="float")
+     * @ORM\Column(name="prix", type="float")
      */
-    private $prixHT;
+    private $prix;
 
 
     /**
@@ -50,27 +50,27 @@ class Prix
     }
 
     /**
-     * Set prixHT
+     * Set prix
      *
-     * @param float $prixHT
+     * @param float $prix
      *
      * @return Prix
      */
-    public function setPrixHT($prixHT)
+    public function setPrix($prix)
     {
-        $this->prixHT = $prixHT;
+        $this->prix = $prix;
 
         return $this;
     }
 
     /**
-     * Get prixHT
+     * Get prix
      *
      * @return float
      */
-    public function getPrixHT()
+    public function getPrix()
     {
-        return $this->prixHT;
+        return $this->prix;
     }
 
     /**
