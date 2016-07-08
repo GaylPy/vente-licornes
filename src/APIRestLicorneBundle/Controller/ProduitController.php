@@ -441,6 +441,106 @@ class ProduitController extends FOSRestController
     }
 
     /**
+     * @ApiDoc(
+     *      section="Produits",
+     *      resource=true,
+     *     description="Modification d'un produit avec l'id du produit dans le body",
+     *     statusCodes={
+     *          200="Returned when successful",
+     *          304="Returned when no modified",
+     *
+     *     },
+     *     requirements={
+     *          {
+     *              "name"="id",
+     *              "dataType"="integer",
+     *              "requirement"="\d+",
+     *              "description"="L'identifiant du produit."
+     *          }
+     *      },
+     * )
+     */
+    public function putProduits2Action(Request $request){
+
+        $response = new Response();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $content = $request->getContent();
+
+        if (!empty($content)) {
+            $params = array();
+            $params = json_decode($content, true); // 2nd param to get as array
+
+            if (empty($params['ecurie']) || empty($params['produit'])) {
+                $response->setStatusCode('400');
+                $response->setContent("Missing parameters");
+
+                return $response;
+            }
+            else{
+                $produit = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Produit')->find($params['produit']);
+                $ecurie = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Ecurie')->find($params['ecurie']);
+
+                if(!is_object($produit) || !is_object($ecurie)){
+                    $response->setStatusCode('400');
+                    $response->setContent("Produit or Ecurie Not Found");
+                    return $response;
+                }
+
+                if(!empty($params['prix'])){
+                    $prix = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Prix')->findPrixProduit($ecurie, $produit);
+
+                    if(is_object($prix)){
+                        $prix->setPrix($params['prix']);
+                        $em->persist($prix);
+                    }
+                    else{
+                        $prixNew = new Prix();
+                        $prixNew->setEcurie($ecurie);
+                        $prixNew->setProduit($produit);
+                        $prixNew->setPrix($params['prix']);
+
+                        $em->persist($prixNew);
+                    }
+                }
+
+                if(!empty($params['quantite'])){
+                    $stock = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Stock')->findOneBy(array(
+                        'ecurie' => $ecurie,
+                        'produit' => $produit
+                    ));
+
+                    if(is_object($stock)){
+                        $stock->setQuantite($params['quantite']);
+                        $em->persist($stock);
+                    }
+                    else{
+                        $stockNew = new Stock();
+                        $stockNew->setEcurie($ecurie);
+                        $stockNew->setProduit($produit);
+                        $stockNew->setQuantite($params['quantite']);
+
+                        $em->persist($stockNew);
+                    }
+                }
+
+                if(!empty($params['nom'])){
+                    $produit->setNom($params['nom']);
+                }
+
+                $em->flush();
+
+                $response->setStatusCode('200');
+                return $response;
+            }
+        }
+
+        return $this->view(null, Codes::HTTP_NOT_MODIFIED);
+    }
+
+
+    /**
      *
      * @ApiDoc(
      *     section="Produits",
