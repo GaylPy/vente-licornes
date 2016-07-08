@@ -460,7 +460,7 @@ class ProduitController extends FOSRestController
      *      },
      * )
      */
-    public function putProduits2Action(Request $request){
+    public function putProduits3Action(Request $request){
 
         $response = new Response();
 
