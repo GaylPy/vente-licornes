@@ -1,6 +1,8 @@
 <?php
 
 namespace APIRestLicorneBundle\Repository;
+use APIRestLicorneBundle\Entity\Ecurie;
+use APIRestLicorneBundle\Entity\Produit;
 
 /**
  * PrixRepository
@@ -10,4 +12,19 @@ namespace APIRestLicorneBundle\Repository;
  */
 class PrixRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findPrixProduit(Ecurie $ecurie, Produit $produit){
+        $qb = $this->createQueryBuilder('p');
+
+        $qb
+            ->where('p.produit = :produit')
+            ->setParameter('produit', $produit->getId())
+            ->andWhere('p.ecurie = :ecurie')
+            ->setParameter('ecurie', $ecurie->getId())
+        ;
+
+        return $qb
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
 }

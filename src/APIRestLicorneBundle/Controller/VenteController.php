@@ -85,13 +85,11 @@ class VenteController extends FOSRestController
             $params = array();
             $params = json_decode($content, true); // 2nd param to get as array
 
-            if(empty($params['vente'])){
+            if(empty($params['vente']) || empty($params['ecurie']) || empty($params['client'])){
                 $response->setStatusCode('400');
 
                 return $response;
             }
-
-            // TODO : Vérification de la saisie des paramètres
 
             $ecurie = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Ecurie')->find($params['ecurie']);
             $client = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Client')->find($params['client']);

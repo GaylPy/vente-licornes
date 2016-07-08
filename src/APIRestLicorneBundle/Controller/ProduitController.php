@@ -33,7 +33,7 @@ class ProduitController extends FOSRestController
      * @ApiDoc(
      *     section="Produits",
      *     resource=true,
-     *     description="Recupère la liste de tous les produits.",
+     *     description="Recupere la liste de tous les produits.",
      *     statusCodes={
      *          200="Returned when successful",
      *     }
@@ -49,7 +49,7 @@ class ProduitController extends FOSRestController
      * @ApiDoc(
      *     section="Produits",
      *     resource=true,
-     *     description="Récupère un produit.",
+     *     description="Recupere un produit.",
      *     requirements={
      *          {
      *              "name"="id",
@@ -69,34 +69,6 @@ class ProduitController extends FOSRestController
         return $produit;
     }
 
-    /**
-     * @ParamConverter("produit", converter="fos_rest.request_body")
-     *
-     * @ApiDoc(
-     *      section="Produits",
-     *      description="Creates a new product.",
-     *      statusCodes={
-     *          201="Returned if product has been successfully created",
-     *          400="Returned if errors",
-     *          500="Returned if server error"
-     *      }
-     * )
-
-    public function postProduitsAction(Produit $produit, ConstraintViolationListInterface $violations)
-    {
-        if (count($violations)) {
-            return $this->view($violations, 400);
-        }
-
-        $this->getDoctrine()->getManager()->persist($produit);
-        $this->getDoctrine()->getManager()->flush();
-
-        return $this->view(null, 201,
-            [
-                'Location' => $this->generateUrl('get_produit', [ 'produit' => $produit->getId()]),
-            ]);
-    }
-     */
     /**
      *
      * @ApiDoc(
@@ -203,24 +175,6 @@ class ProduitController extends FOSRestController
         }
 
         return $response;
-
-        /*
-        $entity = new Produit();
-        $form = $this->createForm(ProduitType::class, $entity, array("method" => $request->getMethod()));
-        $form->handleRequest($request);
-
-
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
-            return $entity;
-        }
-        else{
-            var_dump($form);die();
-        }
-        return $this->handleView($this->view(array('errors' => $form->getErrors()), Codes::HTTP_INTERNAL_SERVER_ERROR));
-    */
     }
 
     /**
@@ -334,6 +288,55 @@ class ProduitController extends FOSRestController
         ));
     }
 
+    /**
+     *
+     * Use the "locale" parameter as the default value
+     * @QueryParam(name="produit", requirements="\d+")
+     *
+     * @QueryParam(name="ecurie", requirements="\d+")
+     *
+     *
+     * @ApiDoc(
+     *      section="Produits",
+     *      resource=true,
+     *      description="Recupere le prix d'un produit. URL : /api/produits/prix?produit={id}&ecurie=[id}"),
+     *      statusCodes={
+     *          200="Returned when succesful",
+     *          400="Returned Bad Request, error syntax",
+     *      },
+     * )
+     */
+    public function getProduitsGetPrixAction(ParamFetcher $paramFetcher){
+        $dynamicRequestParam = new RequestParam();
+        $dynamicRequestParam->name = "dynamic_request";
+        $dynamicRequestParam->requirements = "\d+";
+        $paramFetcher->addParam($dynamicRequestParam);
 
+        $dynamicQueryParam = new QueryParam();
+        $dynamicQueryParam->name = "dynamic_query";
+        $dynamicQueryParam->requirements="[a-z]+";
+        $paramFetcher->addParam($dynamicQueryParam);
+
+        if(empty($paramFetcher->get('ecurie')) || empty($paramFetcher->get('produit'))){
+            $response = new Response();
+            $response->setStatusCode('400');
+
+            return $response;
+        }
+
+        $ecurie = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Ecurie')->find($paramFetcher->get('ecurie'));
+        $produit = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Produit')->find($paramFetcher->get('produit'));
+
+        if(!is_object($ecurie) || !is_object($produit)){
+            $response = new Response();
+            $response->setStatusCode('400');
+
+            return $response;
+        }
+
+        $prix = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Prix')->findPrixProduit($ecurie, $produit);
+
+        return $prix;
+    }
 
 }
