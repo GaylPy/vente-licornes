@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Prix
 {
     /**
-     * @ORM\ManyToOne(targetEntity="APIRestLicorneBundle\Entity\Produit", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="APIRestLicorneBundle\Entity\Produit", cascade={"persist"})
      */
     private $produit;
 
