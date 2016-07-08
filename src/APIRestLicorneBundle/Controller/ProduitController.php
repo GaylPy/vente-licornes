@@ -361,7 +361,7 @@ class ProduitController extends FOSRestController
      *      },
      * )
      */
-    public function putProduitsAction(Request $request){
+    public function putProduitsAction(Request $request, Produit $produit){
 
         $response = new Response();
 
@@ -373,16 +373,19 @@ class ProduitController extends FOSRestController
             $params = array();
             $params = json_decode($content, true); // 2nd param to get as array
 
-            if (empty($params['produit']) || empty($params['ecurie'])) {
+            if (empty($params['ecurie'])) {
                 $response->setStatusCode('400');
+                $response->setContent("Missing parameters");
+
                 return $response;
             }
-            else{
-                $produit = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Produit')->find($params['produit']);
+        else{
+                $produit = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Produit')->find($produit);
                 $ecurie = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Ecurie')->find($params['ecurie']);
 
                 if(!is_object($produit) || !is_object($ecurie)){
                     $response->setStatusCode('400');
+                    $response->setContent("Produit or Ecurie Not Found");
                     return $response;
                 }
 
@@ -392,6 +395,14 @@ class ProduitController extends FOSRestController
                     if(is_object($prix)){
                         $prix->setPrix($params['prix']);
                         $em->persist($prix);
+                    }
+                    else{
+                        $prixNew = new Prix();
+                        $prixNew->setEcurie($ecurie);
+                        $prixNew->setProduit($produit);
+                        $prixNew->setPrix($params['prix']);
+
+                        $em->persist($prixNew);
                     }
                 }
 
@@ -404,6 +415,14 @@ class ProduitController extends FOSRestController
                     if(is_object($stock)){
                         $stock->setQuantite($params['quantite']);
                         $em->persist($stock);
+                    }
+                    else{
+                        $stockNew = new Stock();
+                        $stockNew->setEcurie($ecurie);
+                        $stockNew->setProduit($produit);
+                        $stockNew->setQuantite($params['quantite']);
+
+                        $em->persist($stockNew);
                     }
                 }
 
