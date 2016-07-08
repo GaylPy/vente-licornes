@@ -223,7 +223,7 @@ class ProduitController extends FOSRestController
                 $produit = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Produit')->find($params['produit']);
 
                 if(!is_object($produit) && !is_object($ecurie)){
-                    $response->setStatusCode('400');
+                    $response->setStatusCode('404');
                     return $response;
                 }
 
@@ -237,33 +237,14 @@ class ProduitController extends FOSRestController
                     'ecurie' => $ecurie
                 ));
 
-                if (!$prix || !$stock) {
-                    $prix = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Prix')->findOneBy(array(
-                        'produit' => $produit,
-                        'ecurie' => $ecurie
-                    ));
-
-                    $stock = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Stock')->findOneBy(array(
-                        'produit' => $produit,
-                        'ecurie' => $ecurie
-                    ));
-
-                    if (!$prix || !$stock) {
-                        $response = new Response();
-                        $response->setStatusCode('400');
-
-                        return $response;
-                    }
-
-                    $this->getDoctrine()->getManager()->remove($stock);
+                if($prix){
                     $this->getDoctrine()->getManager()->remove($prix);
-                    $this->getDoctrine()->getManager()->flush();
-
-                    return $this->view('', Response::HTTP_NO_CONTENT);
                 }
 
-                $this->getDoctrine()->getManager()->remove($stock);
-                $this->getDoctrine()->getManager()->remove($prix);
+                if($stock){
+                    $this->getDoctrine()->getManager()->remove($stock);
+                }
+
                 $this->getDoctrine()->getManager()->flush();
 
                 return $this->view('', Response::HTTP_NO_CONTENT);
@@ -275,6 +256,82 @@ class ProduitController extends FOSRestController
 
             return $response;
         }
+    }
+
+    /**
+     * @ApiDoc(
+     *      section="Produits",
+     *      resource=true,
+     *     description="Modification d'un produit",
+     *     statusCodes={
+     *          200="Returned when successful",
+     *          304="Returned when no modified",
+     *
+     *     },
+     *     requirements={
+     *          {
+     *              "name"="id",
+     *              "dataType"="integer",
+     *              "requirement"="\d+",
+     *              "description"="L'identifiant du produit."
+     *          }
+     *      },
+     * )
+     */
+    public function putProduitsAction(Request $request){
+
+        $response = new Response();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $content = $request->getContent();
+
+        if (!empty($content)) {
+            $params = array();
+            $params = json_decode($content, true); // 2nd param to get as array
+
+            if (empty($params['produit']) || empty($params['ecurie'])) {
+                $response->setStatusCode('400');
+                return $response;
+            }
+            else{
+                $produit = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Produit')->find($params['produit']);
+                $ecurie = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Ecurie')->find($params['ecurie']);
+
+                if(!is_object($produit) || !is_object($ecurie)){
+                    $response->setStatusCode('400');
+                    return $response;
+                }
+
+                if(!empty($params['prix'])){
+                    $prix = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Prix')->findPrixProduit($ecurie, $produit);
+
+                    if(is_object($prix)){
+                        $prix->setPrix($params['prix']);
+                        $em->persist($prix);
+                    }
+                }
+
+                if(!empty($params['quantite'])){
+                    $stock = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Stock')->findOneBy(array(
+                        'ecurie' => $ecurie,
+                        'produit' => $produit
+                    ));
+
+                    if(is_object($stock)){
+                        $stock->setQuantite($params['quantite']);
+                        $em->persist($stock);
+                    }
+                }
+
+                $em->flush();
+
+                $response->setStatusCode('200');
+                return $response;
+            }
+        }
+
+        return $this->view(null, Codes::HTTP_NOT_MODIFIED);
     }
 
     /**
