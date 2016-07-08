@@ -355,4 +355,21 @@ class ProduitController extends FOSRestController
         return $prix;
     }
 
+    /**
+     * @ApiDoc(
+     *      section="Produits",
+     *      resource=true,
+     *      description="Recupere les 3 derniers produits"),
+     *      statusCodes={
+     *          200="Returned when succesful",
+     *      },
+     * )
+     */
+    public function getLastProduitsAction()
+    {
+        return $this->getDoctrine()->getRepository('APIRestLicorneBundle:Prix')->findLastProduit();
+
+    }
+
+
 }

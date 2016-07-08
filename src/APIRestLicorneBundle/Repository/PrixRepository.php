@@ -27,4 +27,15 @@ class PrixRepository extends \Doctrine\ORM\EntityRepository
             ->getOneOrNullResult()
             ;
     }
+
+    public function findLastProduit(){
+        return $this
+            ->createQueryBuilder('p')
+            ->orderBy('p.id', 'DESC')
+            ->getQuery()
+            ->setMaxResults(3)
+            ->getResult()
+            ;
+    }
+
 }
