@@ -176,7 +176,7 @@ class ClientController extends FOSRestController
                     'password' => $obj->{'password'}
                 ));
                 if(isset($client)){
-                    $response->setStatusCode(200);
+                    return $client;
                 }
                 else{
                     $response->setStatusCode(400);

@@ -259,6 +259,89 @@ class ProduitController extends FOSRestController
     }
 
     /**
+     * @QueryParam(name="produit", requirements="\d+")
+     * @QueryParam(name="ecurie", requirements="\d+")
+     *
+     * @ApiDoc(
+     *      section="Produits",
+     *      description="Delete an existing product.",
+     *      statusCodes={
+     *          201="Returned if product has been successfully deleted",
+     *          400="Returned if product does not exist",
+     *          500="Returned if server error"
+     *      },
+     *      requirements={
+     *          {
+     *              "name"="produit",
+     *              "dataType"="integer",
+     *              "requirement"="\d+",
+     *              "description"="The product unique identifier."
+     *          },
+     *          {
+     *              "name"="ecurie",
+     *              "dataType"="integer",
+     *              "requirement"="\d+",
+     *              "description"="The ecurie unique identifier."
+     *          }
+     *      },
+     * )
+     */
+    public function deleteProduits2Action(ParamFetcher $paramFetcher)
+    {
+        $response = new Response();
+
+        // ParamFetcher params can be dynamically added during runtime instead of only compile time annotations.
+        $dynamicRequestParam = new RequestParam();
+        $dynamicRequestParam->name = "dynamic_request";
+        $dynamicRequestParam->requirements = "\d+";
+        $paramFetcher->addParam($dynamicRequestParam);
+        $dynamicQueryParam = new QueryParam();
+        $dynamicQueryParam->name = "dynamic_query";
+        $dynamicQueryParam->requirements="[a-z]+";
+        $paramFetcher->addParam($dynamicQueryParam);
+        $produit = $paramFetcher->get('produit');
+        $ecurie = $paramFetcher->get('ecurie');
+
+
+        if (empty($produit) || empty($ecurie)) {
+            $response->setStatusCode('400');
+            return $response;
+        }
+        else {
+            $ecurieObj = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Ecurie')->find($ecurie);
+            $produitObj = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Produit')->find($produit);
+
+            if(!is_object($produitObj) && !is_object($ecurieObj)){
+                $response->setStatusCode('404');
+                return $response;
+            }
+
+            $prix = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Prix')->findOneBy(array(
+                'produit' => $produitObj,
+                'ecurie' => $ecurieObj
+            ));
+
+            $stock = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Stock')->findOneBy(array(
+                'produit' => $produitObj,
+                'ecurie' => $ecurieObj
+            ));
+
+            if($prix){
+                $this->getDoctrine()->getManager()->remove($prix);
+            }
+
+            if($stock){
+                $this->getDoctrine()->getManager()->remove($stock);
+            }
+
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->view('', Response::HTTP_NO_CONTENT);
+        }
+
+    }
+
+    /**
      * @ApiDoc(
      *      section="Produits",
      *      resource=true,
