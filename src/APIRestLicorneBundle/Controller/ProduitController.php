@@ -179,17 +179,10 @@ class ProduitController extends FOSRestController
 
     /**
      *
-     * Use the "locale" parameter as the default value
-     * @QueryParam(name="produit", default="\d+")
-     *
-     * The "baz" container parameter is used here as requirements
-     * Can be used for complex or auto-generated regex
-     * @QueryParam(name="ecurie", requirements="\d+")
-     *
      *
      * @ApiDoc(
      *      section="Produits",
-     *      description="Delete an existing product. /api/produits?produit={id}&ecurite={id}",
+     *      description="Delete an existing product.",
      *      statusCodes={
      *          201="Returned if product has been successfully deleted",
      *          400="Returned if product does not exist",
@@ -197,13 +190,13 @@ class ProduitController extends FOSRestController
      *      },
      *      requirements={
      *          {
-     *              "name"="id",
+     *              "name"="produit",
      *              "dataType"="integer",
      *              "requirement"="\d+",
      *              "description"="The product unique identifier."
      *          },
      *          {
-     *              "name"="idecurie",
+     *              "name"="ecurie",
      *              "dataType"="integer",
      *              "requirement"="\d+",
      *              "description"="The ecurie unique identifier."
@@ -211,54 +204,77 @@ class ProduitController extends FOSRestController
      *      },
      * )
      */
-    public function deleteProduitsAction(ParamFetcher $paramFetcher)
+    public function deleteProduitsAction(Request $request)
     {
-        /*
-        $prix = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Prix')->findOneBy(array(
-            'produit' => $produit,
-            'ecurie' => $ecurie
-        ));
-        $this->getDoctrine()->getManager()->remove($prix);
-        $this->getDoctrine()->getManager()->flush();
+        $response = new Response();
 
-        return $this->view('', Response::HTTP_NO_CONTENT);
-*/
-        // ParamFetcher params can be dynamically added during runtime instead of only compile time annotations.
-        $dynamicRequestParam = new RequestParam();
-        $dynamicRequestParam->name = "dynamic_request";
-        $dynamicRequestParam->requirements = "\d+";
-        $paramFetcher->addParam($dynamicRequestParam);
+        $content = $request->getContent();
 
-        $dynamicQueryParam = new QueryParam();
-        $dynamicQueryParam->name = "dynamic_query";
-        $dynamicQueryParam->requirements="[a-z]+";
-        $paramFetcher->addParam($dynamicQueryParam);
+        if (!empty($content)) {
+            $params = array();
+            $params = json_decode($content, true); // 2nd param to get as array
 
-        $produit = $paramFetcher->get('produit');
-        $ecurie = $paramFetcher->get('ecurie');
+            if (empty($params['produit']) || empty($params['ecurie'])) {
+                $response->setStatusCode('400');
+                return $response;
+            }
+            else {
+                $ecurie = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Ecurie')->find($params['ecurie']);
+                $produit = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Produit')->find($params['produit']);
 
-        $prix = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Prix')->findOneBy(array(
-            'produit' => $produit,
-            'ecurie' => $ecurie
-        ));
+                if(!is_object($produit) && !is_object($ecurie)){
+                    $response->setStatusCode('400');
+                    return $response;
+                }
 
-        $stock = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Stock')->findOneBy(array(
-            'produit' => $produit,
-            'ecurie' => $ecurie
-        ));
+                $prix = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Prix')->findOneBy(array(
+                    'produit' => $produit,
+                    'ecurie' => $ecurie
+                ));
 
-        if(!$prix || !$stock){
+                $stock = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Stock')->findOneBy(array(
+                    'produit' => $produit,
+                    'ecurie' => $ecurie
+                ));
+
+                if (!$prix || !$stock) {
+                    $prix = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Prix')->findOneBy(array(
+                        'produit' => $produit,
+                        'ecurie' => $ecurie
+                    ));
+
+                    $stock = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Stock')->findOneBy(array(
+                        'produit' => $produit,
+                        'ecurie' => $ecurie
+                    ));
+
+                    if (!$prix || !$stock) {
+                        $response = new Response();
+                        $response->setStatusCode('400');
+
+                        return $response;
+                    }
+
+                    $this->getDoctrine()->getManager()->remove($stock);
+                    $this->getDoctrine()->getManager()->remove($prix);
+                    $this->getDoctrine()->getManager()->flush();
+
+                    return $this->view('', Response::HTTP_NO_CONTENT);
+                }
+
+                $this->getDoctrine()->getManager()->remove($stock);
+                $this->getDoctrine()->getManager()->remove($prix);
+                $this->getDoctrine()->getManager()->flush();
+
+                return $this->view('', Response::HTTP_NO_CONTENT);
+            }
+        }
+        else{
             $response = new Response();
             $response->setStatusCode('400');
 
             return $response;
         }
-
-        $this->getDoctrine()->getManager()->remove($stock);
-        $this->getDoctrine()->getManager()->remove($prix);
-        $this->getDoctrine()->getManager()->flush();
-
-        return $this->view('', Response::HTTP_NO_CONTENT);
     }
 
     /**
