@@ -407,6 +407,10 @@ class ProduitController extends FOSRestController
                     }
                 }
 
+                if(!empty($params['nom'])){
+                    $produit->setNom($params['nom']);
+                }
+
                 $em->flush();
 
                 $response->setStatusCode('200');

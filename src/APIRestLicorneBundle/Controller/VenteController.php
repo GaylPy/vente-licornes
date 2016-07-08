@@ -2,6 +2,7 @@
 
 namespace APIRestLicorneBundle\Controller;
 
+use APIRestLicorneBundle\Entity\Client;
 use APIRestLicorneBundle\Entity\LigneVente;
 use APIRestLicorneBundle\Entity\Vente;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -87,12 +88,19 @@ class VenteController extends FOSRestController
 
             if(empty($params['vente']) || empty($params['ecurie']) || empty($params['client'])){
                 $response->setStatusCode('400');
-
+                $response->setContent('Missing Parameters');
                 return $response;
             }
 
             $ecurie = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Ecurie')->find($params['ecurie']);
             $client = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Client')->find($params['client']);
+
+            if(!is_object($client)){
+                $response->setStatusCode('400');
+                $response->setContent('ID Client Not Found');
+
+                return $response;
+            }
             $venteObj = new Vente();
             $venteObj->setEcurie($ecurie);
             $venteObj->setClient($client);
@@ -104,13 +112,15 @@ class VenteController extends FOSRestController
                 $ligneVente = new LigneVente();
                 $produit = $this->getDoctrine()->getRepository('APIRestLicorneBundle:Produit')->find($vente['produit']);
 
-                $ligneVente->setProduit($produit);
-                $ligneVente->setQuantite($vente['quantite']);
-                $ligneVente->setPrixUnitaire('500');
-                $ligneVente->setVente($venteObj);
+                if(is_object($produit)){
+                    $ligneVente->setProduit($produit);
+                    $ligneVente->setQuantite($vente['quantite']);
+                    $ligneVente->setPrixUnitaire('500');
+                    $ligneVente->setVente($venteObj);
 
-                $this->getDoctrine()->getManager()->persist($ligneVente);
-                $this->getDoctrine()->getManager()->flush();
+                    $this->getDoctrine()->getManager()->persist($ligneVente);
+                    $this->getDoctrine()->getManager()->flush();
+                }
             }
 
             return $venteObj;
@@ -147,5 +157,31 @@ class VenteController extends FOSRestController
         $this->getDoctrine()->getManager()->flush();
 
         return $this->view('', Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @ApiDoc(
+     *      section="Ventes",
+     *      description="Recupère la liste des ventes d'un client",
+     *      statusCodes={
+     *          200="Returned when successfull",
+     *          400="Bad request",
+     *          500="Internal server error"
+     *      },
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "dataType"="integer",
+     *              "requirement"="\d+",
+     *              "description"="The client unique identifier."
+     *          }
+     *      },
+     * )
+     */
+    public function getVentesClientAction(Client $client)
+    {
+        return $this->getDoctrine()->getRepository('APIRestLicorneBundle:Vente')->findBy(array(
+            'client' => $client
+        ));
     }
 }
