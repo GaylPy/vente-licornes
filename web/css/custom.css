@@ -2,6 +2,10 @@ body {
     padding-top: 70px;
 }
 
+.home {
+    background-color: rgba(50,50,50,0.5);
+}
+
 /* Inscription */
 .form-signin {
     max-width: 330px;

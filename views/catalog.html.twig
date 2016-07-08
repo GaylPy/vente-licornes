@@ -1,0 +1,38 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Catalogue{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Catalogue
+                </h1>
+            </div>
+        </div>
+        <!-- /.row -->
+
+        <!-- Projects Row -->
+        <div class="row">
+            {% for produit in produits %}
+                <div class="col-md-4 portfolio-item">
+                    <a href="{{ 'product/' ~ produit.id }}">
+                        <img class="img-responsive" src="http://www.kalpavruksh.dk/wp-content/uploads/2015/12/How-to-Build-a-Unicorn.png" alt="">
+                    </a>
+                    <h3>
+                        <a href="{{ 'product/' ~ produit.id }}">{{ produit.nom }}</a>
+                    </h3>
+                    <p>Catégorie :
+                        {% if produit.categorie is defined %}
+                        {{ produit.categorie.libelle }}</p>
+                    {% else %}
+                        <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <!-- /.row -->
+    </div>
+{% endblock %}

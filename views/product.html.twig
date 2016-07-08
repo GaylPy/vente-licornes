@@ -1,0 +1,114 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Produit{% endblock %}
+
+{% block content %}
+
+    <div class="col-md-12">
+    <!-- Page Header -->
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">{{ produit.produit.nom }}
+            </h1>
+        </div>
+    </div>
+    <!-- /.row -->
+    <div class="container">
+        <div class="menu row">
+            <div class="product col-sm-6">
+                <a href="#"><img class="img-responsive"
+                                 src="https://pixabay.com/static/uploads/photo/2016/03/29/22/12/unicorn-1289544_960_720.png"><i
+                            class="btn btn-product fa fa-star"></i></a>
+                <hr>
+                <h2>Description</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pharetra varius quam sit amet
+                    vulputate.
+                    Quisque mauris augue, molestie tincidunt condimentum vitae, gravida a libero. Aenean sit amet
+                    felis
+                    dolor, in sagittis nisi. Sed ac orci quis tortor imperdiet venenatis. Duis elementum auctor
+                    accumsan.
+                    Aliquam in felis sit amet augue.</p>
+                <hr>
+                <h2 class="text-right">{{ produit.prix }} €</h2>
+                <button class="btn btn-primary btn-lg ">Ajouter au Panier</button>
+                <hr>
+
+
+                <ul class="nav nav-tabs">
+                    <li><a data-toggle="tab" href="#reviews">Avis</a></li>
+                    <li class="active"><a data-toggle="tab" href="#details">Informations</a></li>
+                    <li><a data-toggle="tab" href="#sizing">Taille</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane" id="reviews">
+
+                        <h4>Buyer Reviews</h4>
+                        <ul class="list-unstyled">
+                            <li class="clearfix">(Mike R.) I bought this last month before a.. <i
+                                        class="fa fa-star fa-2x yellow pull-right"></i></li>
+                            <li class="clearfix">(Karen) The size of this jacket was a little larger.. <i
+                                        class="fa fa-star fa-2x yellow pull-right"></i></li>
+                            <li class="clearfix">(CAS) I love this jacket. I purchased this as part.. <i
+                                        class="fa fa-star fa-2x yellow pull-right"></i><i
+                                        class="fa fa-star fa-2x yellow pull-right"></i></li>
+                            <li class="clearfix">(William D.) Great value with cool style. If you want.. <i
+                                        class="fa fa-star fa-2x yellow pull-right"></i></li>
+                        </ul>
+
+                    </div>
+                    <div class="tab-pane active" id="details"><h4>Product Information</h4>
+                        <p>Catégorie :
+                            {% if produit.produit.categorie is defined %}
+                            {{ produit.produit.categorie.libelle }}</p>
+                        {% else %}
+                            <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                        {% endif %}
+                        </p>
+                        <p>Ecurie : {% if produit.ecurie is defined %}
+                            {{ produit.ecurie.adresse.ville }}</p>
+                    {% else %}
+                        <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                        {% endif %}
+                    </div>
+                    <div class="tab-pane" id="sizing"><h4>Size Chart</h4></div>
+                </div>
+
+
+            </div>
+            <div class="col-sm-6">
+                <!-- Page Header -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="page-header">Nouveautés
+                        </h3>
+                        <!-- /.row -->
+                        <div class="col-sm-6 col-sm-offset-3">
+                            {% for lastProduct in lastProducts %}
+                                <img class="img-circle img-responsive img-center"
+                                     src="https://lh3.googleusercontent.com/b618ocaSRZyu0c4GCPRCZ631KbnpXdU4Led-P2x5Hc3z8EaP0nddTP3EQd2JypwkC4U=w300"
+                                     alt="">
+                                <h2>{{ lastProduct.produit.nom }}</h2>
+                                <h3>
+                                    <small>Prix :</small>{{ lastProduct.prix }} €
+                                </h3>
+                                <p>Catégorie :
+                                {% if lastProduct.produit.categorie is defined %}
+                                    {{ lastProduct.produit.categorie.libelle }}</p>
+                                {% else %}
+                                    <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                                {% endif %}
+                                </p>
+                                <p>Ecurie : {{ lastProduct.ecurie.adresse.ville }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--/row-->
+    </div>
+    <!--/container-->
+    <div class="col-md-12">
+
+{% endblock %}

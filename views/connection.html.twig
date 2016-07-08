@@ -5,8 +5,9 @@
 {% block content %}
     <div class="container">
         <div class="tab-content">
-            <form id="connexion" role="tabpanel" action="http://ykozlowski.noip.me/api/connexions/clients" method="post" class="form-signin tab-pane fade in active">
+            <form id="connexion" role="tabpanel" action="/api/connexions/clients" method="post" class="form-signin tab-pane fade in active">
                 <h2 class="form-signin-heading">Connexion</h2>
+                <div id="msgAlertConnection" hidden class="alert alert-danger" role="alert"></div>
                 <label for="inputEmail" class="sr-only">Email</label>
                 <input name="email" type="email" id="inputEmail" class="form-control first" placeholder="Email" required autofocus>
                 <label for="inputPassword" class="sr-only">Mot de passe</label>
@@ -21,13 +22,13 @@
                                            data-toggle="tab">Inscription</a></h5>
             </form>
 
-            <form id="inscription" role="tabpanel" action="http://ykozlowski.noip.me/api/clients" method="post" class="form-signin tab-pane fade">
+            <form id="inscription" role="tabpanel" action="/api/clients/99" method="post" class="form-signin tab-pane fade">
                 <h2 class="form-signin-heading">Inscription</h2>
                 <label for="inputFirstName" class="sr-only">Prénom</label>
-                <input name="firstname" type="text" id="inputFirstName" class="form-control first" placeholder="Prénom" required
+                <input name="prenom" type="text" id="inputFirstName" class="form-control first" placeholder="Prénom" required
                        autofocus>
                 <label for="inputName" class="sr-only">Nom</label>
-                <input name="name" type="text" id="inputName" class="form-control" placeholder="Nom" required>
+                <input name="nom" type="text" id="inputName" class="form-control" placeholder="Nom" required>
                 <label for="inputEmail" class="sr-only">Email address</label>
                 <input name="email" type="email" id="inputEmail" class="form-control" placeholder="Email" required >
                 <label for="inputPassword" class="sr-only">Password</label>
@@ -44,5 +45,5 @@
 {% endblock %}
 
 {% block script %}
-    <script src="{{ app.request.basepath }}js/connection.js"></script>
+    <script src="{{ app.request.basepath }}/js/connection.js"></script>
 {% endblock %}

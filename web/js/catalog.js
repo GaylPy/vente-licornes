@@ -40,7 +40,7 @@ $('#connexion').on('submit', function (e) {
         dataType: 'json',
         statusCode: {
             200: function () {
-                window.location = '/session';
+                window.location = '/';
             },
             400: function () {
                 $('#msgAlertConnection').html('<strong>Connexion impossible</strong><br>Vérifiez votre Email / Mot de passe').removeAttr('hidden');
